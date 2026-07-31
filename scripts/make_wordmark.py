@@ -19,10 +19,10 @@ inlined as base64 — an external font URL can't work here, since the SVG
 loads through <img> and browsers refuse subresource fetches for image
 documents. The rose itself is plain SVG shapes, no font involved, reading in
 one neutral ink colour (the engraved-metal look of alternating solid/hollow
-spikes); the letters instead get one continuous blue-to-violet gradient
-swept across the whole word — a single sheen, not a flat colour, and
-distinct from a per-letter rainbow, which is one hue drifting into
-another rather than a row of unrelated colours.
+spikes); the letters instead get one continuous warm-to-cool gradient
+swept across the whole word — a sunset/aurora arc rather than a flat
+colour or a per-letter rainbow: hue drifts smoothly into the next with
+no hard edge, so it never reads as a row of stripes.
 """
 import base64
 import math
@@ -34,10 +34,15 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FONT_FILE = os.path.join(HERE, "fonts", "fredoka-explore.woff2")
 WORD = "EXPLORE"
 
-LIGHT = dict(ink="#2d333b", dim="#8c959f", rule="#c7ced6", face="#ffffff",
-             word1="#1f6feb", word2="#7c3aed")
-DARK = dict(ink="#f0f6fc", dim="#8b949e", rule="#30363d", face="#0d1117",
-            word1="#6fb2ff", word2="#c4a1ff")
+LIGHT = dict(ink="#2d333b", dim="#8c959f", rule="#c7ced6", face="#ffffff")
+DARK = dict(ink="#f0f6fc", dim="#8b949e", rule="#30363d", face="#0d1117")
+
+# One fixed gradient for the word, warm to cool — like a sunset/aurora arc
+# rather than a flat colour or a per-letter rainbow (distinct from that:
+# it's one continuous sweep, hue drifting smoothly into the next, not a
+# row of hard-edged stripes). Saturated enough to read clearly on both a
+# white and a near-black page background, so it isn't theme-dependent.
+WORD_STOPS = ["#ff6b4a", "#ffb648", "#34d399", "#3b82f6", "#8b5cf6"]
 
 FONT_SIZE = 84
 LETTER_GAP = 13
@@ -71,21 +76,24 @@ def style_defs():
     def block(t):
         return (f".ink{{fill:{t['ink']};stroke:{t['ink']}}}"
                 f".dim{{stroke:{t['dim']}}}.rule{{stroke:{t['rule']}}}"
-                f".face{{fill:{t['face']}}}"
-                f".gs1{{stop-color:{t['word1']}}}.gs2{{stop-color:{t['word2']}}}")
+                f".face{{fill:{t['face']}}}")
     return (f"<style>{font_face()}{block(LIGHT)}"
             f"@media(prefers-color-scheme:dark){{{block(DARK)}}}</style>")
 
 
 def word_gradient(x0, x1, y):
-    """One continuous gradient swept across the whole word — a smooth
-    blue-to-violet sheen rather than a flat single colour, and distinct
-    from a per-letter rainbow: it's one hue drifting into another, not a
-    row of unrelated colours."""
+    """One continuous gradient swept across the whole word — warm to cool,
+    like a sunset arc, rather than a flat single colour or a per-letter
+    rainbow: hue drifts smoothly into the next, there's no hard edge
+    anywhere for it to read as a row of stripes."""
+    n = len(WORD_STOPS) - 1
+    stops = "".join(
+        f'<stop offset="{i / n * 100:.0f}%" stop-color="{c}"/>'
+        for i, c in enumerate(WORD_STOPS)
+    )
     return (f'<linearGradient id="wordGrad" gradientUnits="userSpaceOnUse" '
             f'x1="{x0:.1f}" y1="{y:.1f}" x2="{x1:.1f}" y2="{y:.1f}">'
-            f'<stop offset="0%" class="gs1"/><stop offset="100%" class="gs2"/>'
-            f'</linearGradient>')
+            f'{stops}</linearGradient>')
 
 
 def spike(cx, cy, deg, length, half_w):
