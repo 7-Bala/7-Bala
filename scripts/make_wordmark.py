@@ -79,11 +79,21 @@ INTRO_DELAY = LID_OPEN_BEGIN + LID_OPEN_DUR + INTRO_GAP
 # notch at the top, the way the real thing is.
 SCREEN_RATIO = 16 / 10
 INNER_PAD = 12    # between the content's own bounding box and the screen surface
-FRAME = 9         # black bezel thickness around the screen surface
-LID_EDGE = 5      # thin blue-aluminium edge around the black bezel
+FRAME = 6         # black bezel thickness around the screen surface — thin,
+                  # like the real Air's slim border, not a thick old-laptop frame
+LID_EDGE = 2      # hairline blue-aluminium edge around the black bezel
 FLARE = 5         # how much wider the unibody base is than the lid, each side
 TOP_PAD = 16
 BOTTOM_PAD = 10
+
+# A static, non-animated shear applied to the whole laptop at the very end
+# (after everything else, animation included, is otherwise already correct)
+# — so it reads as viewed slightly from its right, screen turned a touch to
+# the left, rather than dead-on. A pure front view is exactly what made the
+# scaleY lid-open trick look like a flat squash instead of a hinge turning
+# in depth: with an implied turn already in the static pose, that same
+# motion reads as rotation, not a squash.
+SKEW_DEG = -6
 
 MB_BLUE = "#b7cede"        # chassis — MacBook Air M4 "Sky Blue"
 MB_BLUE_EDGE = "#93aec8"   # chassis shading / stroke
@@ -389,23 +399,25 @@ def build_svg():
     # surface, with a small camera notch dipping into the top of the screen.
     lid_edge = (
         f'<rect x="{lid_left:.1f}" y="{TOP_PAD:.1f}" width="{lid_w:.1f}" '
-        f'height="{lid_h:.1f}" rx="12" fill="{MB_BLUE}" '
+        f'height="{lid_h:.1f}" rx="9" fill="{MB_BLUE}" '
         f'stroke="{MB_BLUE_EDGE}" stroke-width="1"/>'
     )
     bezel = (
         f'<rect x="{screen_left:.1f}" y="{screen_top:.1f}" '
-        f'width="{screen_w:.1f}" height="{screen_h:.1f}" rx="8" '
+        f'width="{screen_w:.1f}" height="{screen_h:.1f}" rx="7" '
         f'fill="{MB_BLACK}"/>'
     )
     inner_x, inner_y = screen_left + FRAME, screen_top + FRAME
     surface = (
         f'<rect x="{inner_x:.1f}" y="{inner_y:.1f}" width="{inner_w:.1f}" '
-        f'height="{inner_h:.1f}" rx="4" class="face"/>'
+        f'height="{inner_h:.1f}" rx="3" class="face"/>'
     )
-    notch_w, notch_h = inner_w * 0.1, 7
-    notch = (f'<rect x="{lid_cx - notch_w / 2:.1f}" y="{inner_y - 1:.1f}" '
-              f'width="{notch_w:.1f}" height="{notch_h:.1f}" rx="3.5" '
-              f'fill="{MB_BLACK}"/>')
+    # A real Air's notch is small relative to the screen — roughly 7-8% of
+    # the width and barely tall enough to read as a pill, not a wide tab.
+    notch_w, notch_h = inner_w * 0.075, 5.5
+    notch = (f'<rect x="{lid_cx - notch_w / 2:.1f}" y="{inner_y:.1f}" '
+              f'width="{notch_w:.1f}" height="{notch_h:.1f}" '
+              f'rx="{notch_h / 2:.1f}" fill="{MB_BLACK}"/>')
     clip = (f'<clipPath id="screen"><rect x="{inner_x:.1f}" y="{inner_y:.1f}" '
             f'width="{inner_w:.1f}" height="{inner_h:.1f}" rx="4"/></clipPath>')
     content_x = inner_x + (inner_w - content_w) / 2
@@ -419,12 +431,25 @@ def build_svg():
     lid = _lid_open(lid_cx, hinge_y,
                      lid_edge + bezel + surface + clip + screen_content + notch)
 
+    # The turn is a shear pivoted around the vertical centre (rather than
+    # the top edge), so the top and bottom lean opposite, equal amounts —
+    # a pivot-from-the-middle tilt instead of one hanging from the top —
+    # which also means only half as much extra canvas is needed on each
+    # side to avoid clipping the sheared corners.
+    cy = height / 2
+    skew_pad = int(math.ceil(cy * abs(math.tan(math.radians(SKEW_DEG))))) + 2
+    full_width = width + skew_pad * 2
+
     parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '
-        f'height="{height}" viewBox="0 0 {width} {height}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{full_width}" '
+        f'height="{height}" viewBox="0 0 {full_width} {height}">',
         style_defs(),
+        f'<g transform="translate({skew_pad},0)">',
+        f'<g transform="translate(0,{cy:.1f}) skewX({SKEW_DEG}) '
+        f'translate(0,{-cy:.1f})">',
         base,
         lid,
+        "</g></g>",
         "</svg>",
     ]
     return "".join(parts)
