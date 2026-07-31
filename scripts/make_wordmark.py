@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Draw ascii.svg — "EXPLORE" with a compass rose standing in for the O.
 
-The rose resolves first: rim, star and ticks all spin together as one rigid
-body — several full turns, decelerating into the stop on a single smooth
-ease, no bounce — then freeze completely static, like a logo mark. Only
-once it's still do the other six letters fade/slide in, left to right, each
-on that same ease-out. Nothing loops: everything uses fill="freeze" and
-plays once. Motion is SMIL because GitHub strips <script> from READMEs.
+The rose is two rigid pieces. The housing — rim, inner ring, tick marks —
+pops in once and stays fixed, like a real compass's dial. The blades — the
+8-point star and its centre pivot — spin in on entrance (several turns,
+decelerating into place on a shared ease, no bounce) and then keep spinning
+slowly forever, handing off from the entrance spin to the idle one at the
+same angle so there's no jump. Only once the housing has landed do the
+other six letters fade/slide in, left to right, on that same ease-out.
+Everything but the blades' idle spin uses fill="freeze" and plays once;
+motion is SMIL because GitHub strips <script> from READMEs.
 
     python3 scripts/make_wordmark.py
 
@@ -34,7 +37,7 @@ DARK = dict(ink="#f0f6fc", dim="#8b949e", rule="#30363d", face="#0d1117",
             word="#58a6ff")
 
 FONT_SIZE = 84
-LETTER_GAP = 3
+LETTER_GAP = 13
 PAD = 30
 
 # A single, consistent "premium" ease — decelerate quickly then settle, no
@@ -84,12 +87,29 @@ def spike(cx, cy, deg, length, half_w):
             f'<path d="{tri2}" class="face rule" stroke-width="1"/>')
 
 
+def _pop_in(cx, cy, delay, dur, inner_svg):
+    """Fade + scale-around-(cx,cy) pop-in, frozen at scale 1. Reused by both
+    the fixed housing and the spinning blades below."""
+    return (
+        f'<g transform="translate({cx:.1f},{cy:.1f})">'
+        f'<g opacity="0">'
+        f'<set attributeName="opacity" to="1" begin="{delay:.2f}s"/>'
+        f'<animateTransform attributeName="transform" type="scale" '
+        f'values="0.35;1" begin="{delay:.2f}s" dur="{dur:.2f}s" fill="freeze" '
+        f'calcMode="spline" keySplines="{EASE}"/>'
+        f'<g transform="translate({-cx:.1f},{-cy:.1f})">{inner_svg}</g>'
+        f'</g></g>'
+    )
+
+
 def rose(cx, cy, r):
-    """A layered compass rose: rim, star, ticks, centre point — one rigid
-    body that spins several turns and settles, rather than a fixed rim with
-    an independently-spinning star inside it."""
+    """A compass rose split into two rigid pieces: the housing (rim, inner
+    ring, tick marks) pops in once and then stays fixed like a real
+    compass's dial — and the blades (the 8-point star + centre pivot)
+    spin in on entrance and then keep spinning slowly forever, like a
+    needle that never quite stops searching."""
     circumference = 2 * math.pi * r
-    parts = [
+    housing = [
         f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" fill="none" '
         f'class="rule" stroke-width="2" '
         f'stroke-dasharray="{circumference:.1f}" '
@@ -100,10 +120,6 @@ def rose(cx, cy, r):
         '<circle cx="{:.1f}" cy="{:.1f}" r="{:.1f}" fill="none" '
         'class="rule" stroke-width="1"/>'.format(cx, cy, r * 0.74),
     ]
-    for deg in (0, 90, 180, 270):
-        parts.append(spike(cx, cy, deg, r * 0.92, r * 0.11))
-    for deg in (45, 135, 225, 315):
-        parts.append(spike(cx, cy, deg, r * 0.56, r * 0.075))
     for deg in range(0, 360, 22):
         if deg % 45 == 0:
             continue
@@ -111,33 +127,35 @@ def rose(cx, cy, r):
         r1, r2 = r * 0.86, r * 0.97
         x1, y1 = cx + r1 * math.cos(rad), cy + r1 * math.sin(rad)
         x2, y2 = cx + r2 * math.cos(rad), cy + r2 * math.sin(rad)
-        parts.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" '
-                      f'y2="{y2:.1f}" class="dim" stroke-width="1"/>')
-    parts.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r * 0.06:.1f}" '
-                 f'class="ink"/>')
+        housing.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" '
+                        f'y2="{y2:.1f}" class="dim" stroke-width="1"/>')
 
-    # Outer group spins the WHOLE rose — rim included — around (cx, cy)
-    # using rotate's own pivot form (no static base transform to fight
-    # with): several full turns, decelerating into the stop on the same
-    # ease used everywhere else, so it reads as one piece finding its
-    # direction rather than a rim sitting still while the star spins
-    # inside it. Middle/inner nest a translate -> scale -> translate-back
-    # so the pop-in scale happens around that same point.
-    group = (
+    blades = []
+    for deg in (0, 90, 180, 270):
+        blades.append(spike(cx, cy, deg, r * 0.92, r * 0.11))
+    for deg in (45, 135, 225, 315):
+        blades.append(spike(cx, cy, deg, r * 0.56, r * 0.075))
+    blades.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r * 0.06:.1f}" '
+                  f'class="ink"/>')
+
+    housing_group = _pop_in(cx, cy, 0.05, 0.6, "".join(housing))
+
+    # Blades: an entrance spin (several turns, decelerating into 0 on the
+    # shared ease) that hands off — same angle, no jump — into a slow
+    # indefinite spin once landed. Nested inside the same pop-in used by
+    # the housing so both fade/scale in together.
+    blade_group = (
         f'<g>'
         f'<animateTransform attributeName="transform" type="rotate" '
         f'values="-760 {cx:.1f} {cy:.1f};0 {cx:.1f} {cy:.1f}" begin="0.05s" '
         f'dur="1.1s" fill="freeze" calcMode="spline" keySplines="{EASE}"/>'
-        f'<g transform="translate({cx:.1f},{cy:.1f})">'
-        f'<g opacity="0">'
-        f'<set attributeName="opacity" to="1" begin="0.05s"/>'
-        f'<animateTransform attributeName="transform" type="scale" '
-        f'values="0.35;1" begin="0.05s" dur="1.1s" fill="freeze" '
-        f'calcMode="spline" keySplines="{EASE}"/>'
-        f'<g transform="translate({-cx:.1f},{-cy:.1f})">{"".join(parts)}</g>'
-        f'</g></g></g>'
+        f'<animateTransform attributeName="transform" type="rotate" '
+        f'values="0 {cx:.1f} {cy:.1f};360 {cx:.1f} {cy:.1f}" begin="1.15s" '
+        f'dur="6s" repeatCount="indefinite"/>'
+        f'{_pop_in(cx, cy, 0.05, 1.1, "".join(blades))}'
+        f'</g>'
     )
-    return group
+    return housing_group + blade_group
 
 
 def letter(ch, x, base_y, delay):
@@ -166,17 +184,35 @@ def build_svg():
 
     o_index = WORD.index("O")
     x = float(PAD)
-    letters_svg, rose_svg = [], ""
+    letters_svg, rose_svg, slot_cx, r = [], "", 0.0, 0.0
     non_o_i = 0
+    # Letters wait until the compass has both landed centre-stage AND
+    # glided over to its slot — see the timing block below.
+    letter_start = 1.85
     for i, ch in enumerate(WORD):
         if i == o_index:
-            r = widths[i] / 2 * 1.16
-            rose_svg = rose(x + widths[i] / 2, cap_center_y, r)
+            r = widths[i] / 2 * 1.08
+            slot_cx = x + widths[i] / 2
         else:
-            delay = 1.30 + non_o_i * 0.10
+            delay = letter_start + non_o_i * 0.10
             letters_svg.append(letter(ch, x, base_y, delay))
             non_o_i += 1
         x += widths[i] + LETTER_GAP
+
+    # The rose is built at its true final position (slot_cx) so all of its
+    # own internal pivot math is correct, then wrapped in a group that
+    # starts shifted to dead centre and glides over to (0,0) offset — i.e.
+    # it plays its whole entrance centre-stage, then moves into the word.
+    rose_svg = rose(slot_cx, cap_center_y, r)
+    canvas_cx = width / 2
+    offset_x = canvas_cx - slot_cx
+    rose_svg = (
+        f'<g>'
+        f'<animateTransform attributeName="transform" type="translate" '
+        f'values="{offset_x:.1f},0;0,0" begin="1.25s" dur="0.6s" '
+        f'fill="freeze" calcMode="spline" keySplines="{EASE}"/>'
+        f'{rose_svg}</g>'
+    )
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '
