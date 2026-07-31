@@ -3,13 +3,14 @@
 
 The rose is two rigid pieces. The housing — rim, inner ring, tick marks —
 pops in once and stays fixed, like a real compass's dial. The blades — the
-8-point star and its centre pivot — spin in on entrance (several turns,
-decelerating into place on a shared ease, no bounce) and then keep spinning
-slowly forever, handing off from the entrance spin to the idle one at the
-same angle so there's no jump. Only once the housing has landed do the
-other six letters fade/slide in, left to right, on that same ease-out.
-Everything but the blades' idle spin uses fill="freeze" and plays once;
-motion is SMIL because GitHub strips <script> from READMEs.
+8-point star and its centre pivot — spin in on entrance only: several
+turns, decelerating into a stop on a shared ease, then frozen there for
+good — a still logo mark once it's landed, not something that keeps
+turning. The whole rose plays this entrance centre-stage, then glides over
+to its slot as the O; only once it's landed do the other six letters
+fade/slide in, left to right, on that same ease-out. Everything uses
+fill="freeze" and plays once — nothing loops. Motion is SMIL because
+GitHub strips <script> from READMEs.
 
     python3 scripts/make_wordmark.py
 
@@ -140,18 +141,15 @@ def rose(cx, cy, r):
 
     housing_group = _pop_in(cx, cy, 0.05, 0.6, "".join(housing))
 
-    # Blades: an entrance spin (several turns, decelerating into 0 on the
-    # shared ease) that hands off — same angle, no jump — into a slow
-    # indefinite spin once landed. Nested inside the same pop-in used by
-    # the housing so both fade/scale in together.
+    # Blades: one entrance spin only — several turns, decelerating into a
+    # stop on the shared ease — then frozen there for good. No idle loop:
+    # it spins once, the way it did the first time the page opened, and
+    # then it's a still logo mark, not something that keeps turning.
     blade_group = (
         f'<g>'
         f'<animateTransform attributeName="transform" type="rotate" '
         f'values="-760 {cx:.1f} {cy:.1f};0 {cx:.1f} {cy:.1f}" begin="0.05s" '
         f'dur="1.1s" fill="freeze" calcMode="spline" keySplines="{EASE}"/>'
-        f'<animateTransform attributeName="transform" type="rotate" '
-        f'values="0 {cx:.1f} {cy:.1f};360 {cx:.1f} {cy:.1f}" begin="1.15s" '
-        f'dur="6s" repeatCount="indefinite"/>'
         f'{_pop_in(cx, cy, 0.05, 1.1, "".join(blades))}'
         f'</g>'
     )
