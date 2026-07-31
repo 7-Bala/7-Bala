@@ -339,9 +339,15 @@ def build_svg():
         f'height="{HINGE_GAP + 1}" rx="1.5" fill="{MB_BLUE_EDGE}"/>'
     )
 
+    # Vertical layout of the deck, as fractions of base_h that sum to <=1:
+    # margin, keyboard well, a gap, the trackpad, then a bottom margin.
+    # (The previous version set well_h and pad_h independently and they
+    # overflowed past base_bottom — the trackpad rendered half off the
+    # bottom edge of the laptop entirely.)
+    top_f, well_f, gap_f, pad_f = 0.09, 0.50, 0.06, 0.27
     deck_pad = base_w * 0.045
-    well_x, well_y = deck_pad, base_top + base_h * 0.12
-    well_w, well_h = base_w - deck_pad * 2, base_h * 0.6
+    well_x, well_y = deck_pad, base_top + base_h * top_f
+    well_w, well_h = base_w - deck_pad * 2, base_h * well_f
     base += (
         f'<rect x="{well_x:.1f}" y="{well_y:.1f}" width="{well_w:.1f}" '
         f'height="{well_h:.1f}" rx="{base_h * 0.09:.1f}" fill="{MB_BLACK}"/>'
@@ -370,9 +376,9 @@ def build_svg():
               f'width="{space_w:.1f}" height="{bar_h:.1f}" rx="{bar_h * 0.25:.1f}" '
               f'fill="{MB_KEY}"/>')
 
-    pad_w, pad_h = base_h * 1.7, base_h * 0.7
+    pad_w, pad_h = well_w * 0.32, base_h * pad_f
     pad_x = lid_cx - pad_w / 2
-    pad_y = well_y + well_h + (base_bottom - (well_y + well_h) - pad_h) / 2
+    pad_y = well_y + well_h + base_h * gap_f
     base += (
         f'<rect x="{pad_x:.1f}" y="{pad_y:.1f}" width="{pad_w:.1f}" '
         f'height="{pad_h:.1f}" rx="{pad_h * 0.22:.1f}" fill="none" '
