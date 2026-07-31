@@ -52,6 +52,12 @@ PAD = 30
 # as one motion language rather than a pile of different easings.
 EASE = "0.16 1 0.3 1"
 
+# The lid alone uses a plain ease-in-out instead: EASE is heavily front-
+# loaded (76% open at just 20% of the duration), which reads as a snap
+# rather than a physical hinge lifting. A hinge should move at a more even
+# pace throughout.
+LID_EASE = "0.45 0 0.2 1"
+
 # Laptop timing: the lid opens first, then — once it's fully open — the
 # compass sequence (rose + letters) begins. INTRO_DELAY is added to every
 # begin= time in the content below so nothing plays while the screen is
@@ -274,7 +280,7 @@ def _lid_open(lid_cx, hinge_y, inner_svg):
         f'<animateTransform attributeName="transform" type="scale" '
         f'values="1,0.035;1,0.035;1,1" keyTimes="0;{hold_frac:.4f};1" '
         f'begin="0s" dur="{total:.2f}s" fill="freeze" calcMode="spline" '
-        f'keySplines="{EASE};{EASE}"/>'
+        f'keySplines="{EASE};{LID_EASE}"/>'
         f'<g transform="translate({-lid_cx:.1f},{-hinge_y:.1f})">'
         f'{inner_svg}</g></g></g>'
     )
