@@ -61,13 +61,17 @@ LID_OPEN_DUR = 0.75
 INTRO_GAP = 0.15
 INTRO_DELAY = LID_OPEN_BEGIN + LID_OPEN_DUR + INTRO_GAP
 
-# Laptop geometry
+# Laptop geometry. The content (508x150) is much wider and flatter than any
+# real screen, so the screen's own proportions are set independently, to a
+# real 16:10 laptop ratio, rather than shrink-wrapped to the content — the
+# content sits centred inside it. Shrink-wrapping to the content is what
+# made the whole laptop read as an odd flat letterbox.
+SCREEN_RATIO = 16 / 10
 INNER_PAD = 12   # between the content's own bounding box and the screen surface
-FRAME = 9        # bezel frame thickness around the screen surface
-BASE_H = 16
-FLARE = 24       # how much wider the base is than the screen, each side
-TOP_PAD = 14
-BOTTOM_PAD = 8
+FRAME = 10       # bezel frame thickness around the screen surface
+FLARE = 20       # how much wider the base is than the screen, each side
+TOP_PAD = 16
+BOTTOM_PAD = 10
 HINGE_GAP = 3
 
 
@@ -279,27 +283,45 @@ def _lid_open(lid_cx, hinge_y, inner_svg):
 def build_svg():
     content_svg, content_w, content_h = _content(INTRO_DELAY)
 
+    # The screen keeps a real 16:10 ratio, sized to fit the content's width;
+    # the content sits centred inside it rather than dictating its shape, so
+    # there's headroom above/below it the way a wide logo would look small
+    # and centred on an actual laptop's screen.
     inner_w = content_w + INNER_PAD * 2
-    inner_h = content_h + INNER_PAD * 2
+    inner_h = max(content_h + INNER_PAD * 2, inner_w / SCREEN_RATIO)
     screen_w = inner_w + FRAME * 2
     screen_h = inner_h + FRAME * 2
 
+    base_h = screen_w * 0.11
     width = int(screen_w + FLARE * 2)
     screen_left = FLARE
     screen_top = TOP_PAD
     hinge_y = screen_top + screen_h
     base_top = hinge_y + HINGE_GAP
-    base_bottom = base_top + BASE_H
+    base_bottom = base_top + base_h
     height = int(base_bottom + BOTTOM_PAD)
     lid_cx = screen_left + screen_w / 2
 
-    # Base: a trapezoid a little wider than the screen, so the lid reads
-    # as sitting on something rather than floating.
+    # Base: a trapezoid a little wider than the screen, with a trackpad and
+    # a few key-row hints so it reads as a keyboard deck, not a plain wedge.
+    pad_w, pad_h = base_h * 1.6, base_h * 0.55
+    pad_x, pad_y = lid_cx - pad_w / 2, base_top + base_h * 0.28
+    keys_y = base_top + base_h * 0.22
+    key_row = "".join(
+        f'<line x1="{screen_left + screen_w * f0:.1f}" y1="{keys_y:.1f}" '
+        f'x2="{screen_left + screen_w * f1:.1f}" y2="{keys_y:.1f}" '
+        f'class="rule" stroke-width="1"/>'
+        for f0, f1 in ((0.08, 0.34), (0.66, 0.92))
+    )
     base = (
         f'<path d="M{screen_left:.1f} {base_top:.1f}'
         f'L{screen_left + screen_w:.1f} {base_top:.1f}'
         f'L{width:.1f} {base_bottom:.1f}'
         f'L0 {base_bottom:.1f}Z" class="dim rule" stroke-width="1"/>'
+        f'{key_row}'
+        f'<rect x="{pad_x:.1f}" y="{pad_y:.1f}" width="{pad_w:.1f}" '
+        f'height="{pad_h:.1f}" rx="{pad_h * 0.25:.1f}" fill="none" '
+        f'class="rule" stroke-width="1"/>'
         f'<rect x="{lid_cx - 16:.1f}" y="{hinge_y:.1f}" width="32" '
         f'height="{HINGE_GAP + 1}" rx="1.5" class="ink"/>'
     )
@@ -316,8 +338,8 @@ def build_svg():
     )
     clip = (f'<clipPath id="screen"><rect x="{inner_x:.1f}" y="{inner_y:.1f}" '
             f'width="{inner_w:.1f}" height="{inner_h:.1f}" rx="4"/></clipPath>')
-    content_x = inner_x + INNER_PAD
-    content_y = inner_y + INNER_PAD
+    content_x = inner_x + (inner_w - content_w) / 2
+    content_y = inner_y + (inner_h - content_h) / 2
     screen_content = (
         f'<g clip-path="url(#screen)">'
         f'<g transform="translate({content_x:.1f},{content_y:.1f})">'
