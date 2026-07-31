@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Draw ascii.svg — "EXPLORE" with a compass rose standing in for the O.
+"""Draw ascii.svg — "EXPLORE" with a compass rose and a pixel-art globe
+alternating in place of the O.
 
 The rose is two rigid pieces. The housing — rim, inner ring, tick marks —
 pops in once and stays fixed, like a real compass's dial. The blades — the
@@ -8,9 +9,16 @@ turns, decelerating into a stop on a shared ease, then frozen there for
 good — a still logo mark once it's landed, not something that keeps
 turning. The whole rose plays this entrance centre-stage, then glides over
 to its slot as the O; only once it's landed do the other six letters
-fade/slide in, left to right, on that same ease-out. Everything uses
-fill="freeze" and plays once — nothing loops. Motion is SMIL because
-GitHub strips <script> from READMEs.
+fade/slide in, left to right, on that same ease-out.
+
+Once everything has settled, the O keeps a second life: it crossfades
+between the compass and a small pixel-art globe (an original procedural
+land/ocean pattern, not traced from any reference image) that spins
+continuously behind a fixed circular window, forever alternating on a
+slow cycle. Everything up to that point uses fill="freeze" and plays
+once; only the crossfade cycle and the globe's own spin repeat
+indefinitely. Motion is SMIL because GitHub strips <script> from
+READMEs.
 
     python3 scripts/make_wordmark.py
 
@@ -47,6 +55,13 @@ PAD = 30
 # overshoot. Every entrance in this file uses it, so the whole reveal reads
 # as one motion language rather than a pile of different easings.
 EASE = "0.16 1 0.3 1"
+
+# Once the compass has landed, the O alternates with the globe forever: each
+# stays fully visible for CYCLE_SHOW seconds, then crossfades over
+# CYCLE_FADE seconds, on repeat.
+CYCLE_SHOW = 4.0
+CYCLE_FADE = 0.6
+CYCLE_DUR = 2 * (CYCLE_SHOW + CYCLE_FADE)
 
 
 def metrics():
@@ -170,6 +185,52 @@ def rose(cx, cy, r):
     return housing_group + blade_group
 
 
+GLOBE_OCEAN = "#2d5f9e"
+GLOBE_LAND = "#5a9450"
+GLOBE_ICE = "#eceef1"
+GLOBE_SPIN_DUR = 9  # seconds per full rotation, independent of the crossfade cycle
+
+
+def globe(cx, cy, r):
+    """A small pixel-art Earth: an original procedural land/ocean pattern
+    (layered sine waves, not traced from any photo or map) clipped to a
+    fixed circular window, spinning continuously behind it."""
+    n = 16
+    cell = (2 * r) / n
+    clip_id = f"globeClip{int(cx)}{int(cy)}"
+    tiles = []
+    for row in range(n):
+        for col in range(n):
+            px = -r + (col + 0.5) * cell
+            py = -r + (row + 0.5) * cell
+            if math.hypot(px, py) > r - cell * 0.3:
+                continue
+            if abs(py) > r * 0.78:
+                color = GLOBE_ICE
+            else:
+                val = (math.sin(col * 0.85 + row * 0.35)
+                       * math.cos(row * 0.65 - col * 0.42)
+                       + 0.25 * math.sin(row * 1.6) + 0.15 * math.cos(col * 1.9))
+                color = GLOBE_LAND if val > 0.28 else GLOBE_OCEAN
+            tiles.append(f'<rect x="{px:.1f}" y="{py:.1f}" width="{cell + 0.5:.1f}" '
+                         f'height="{cell + 0.5:.1f}" fill="{color}"/>')
+
+    # Tiles are already drawn centred on local (0,0); the outer group's
+    # static translate positions that at (cx,cy), and the inner group's
+    # animateTransform is the only thing controlling its own transform
+    # attribute — no static base to conflict with, unlike putting a
+    # static translate and an animated rotate on the very same element.
+    spin = (f'<g transform="translate({cx:.1f},{cy:.1f})">'
+            f'<g>'
+            f'<animateTransform attributeName="transform" type="rotate" '
+            f'values="0;360" begin="0s" dur="{GLOBE_SPIN_DUR}s" '
+            f'repeatCount="indefinite"/>'
+            f'{"".join(tiles)}</g></g>')
+    return (f'<clipPath id="{clip_id}"><circle cx="{cx:.1f}" cy="{cy:.1f}" '
+            f'r="{r:.1f}"/></clipPath>'
+            f'<g clip-path="url(#{clip_id})">{spin}</g>')
+
+
 def letter(ch, x, base_y, delay):
     safe = ch
     return (
@@ -237,12 +298,41 @@ def build_svg():
         f'{rose_svg}</g>'
     )
 
+    # Once the compass has landed (glide_end), the O starts an indefinite
+    # crossfade cycle with the globe. compass_fade's own base opacity
+    # doesn't need setting explicitly — the SVG default (1) already
+    # matches what's showing throughout the entrance, and matches this
+    # animation's first keyframe, so there's no jump at the handoff.
+    # globe_fade DOES need an explicit opacity="0" base: unlike compass,
+    # the globe has no prior animation keeping it hidden before glide_end,
+    # so without that static attribute it would default to visible (1)
+    # and show through the compass's whole entrance — the same class of
+    # pre-begin bug fixed twice already elsewhere in this file.
+    t1 = CYCLE_SHOW / CYCLE_DUR
+    t2 = (CYCLE_SHOW + CYCLE_FADE) / CYCLE_DUR
+    t3 = (CYCLE_SHOW + CYCLE_FADE + CYCLE_SHOW) / CYCLE_DUR
+    keytimes = f"0;{t1:.4f};{t2:.4f};{t3:.4f};1"
+    splines = ";".join([EASE] * 4)
+    compass_fade = (
+        f'<animate attributeName="opacity" values="1;1;0;0;1" '
+        f'keyTimes="{keytimes}" begin="{glide_end}s" dur="{CYCLE_DUR}s" '
+        f'repeatCount="indefinite" calcMode="spline" keySplines="{splines}"/>'
+    )
+    globe_fade = (
+        f'<animate attributeName="opacity" values="0;0;1;1;0" '
+        f'keyTimes="{keytimes}" begin="{glide_end}s" dur="{CYCLE_DUR}s" '
+        f'repeatCount="indefinite" calcMode="spline" keySplines="{splines}"/>'
+    )
+    rose_svg = f'<g>{compass_fade}{rose_svg}</g>'
+    globe_svg = f'<g opacity="0">{globe_fade}{globe(slot_cx, cap_center_y, r)}</g>'
+
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '
         f'height="{height}" viewBox="0 0 {width} {height}">',
         style_defs(),
         word_gradient(PAD, width - PAD, base_y),
         rose_svg,
+        globe_svg,
         "".join(letters_svg),
         "</svg>",
     ]
