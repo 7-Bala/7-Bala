@@ -14,11 +14,20 @@ GitHub strips <script> from READMEs.
 
     python3 scripts/make_wordmark.py
 
-"EXPLORE" is set in Fredoka (SIL OFL), subset to the letters it needs and
-inlined as base64 — an external font URL can't work here, since the SVG
-loads through <img> and browsers refuse subresource fetches for image
-documents. The rose itself is plain SVG shapes, no font involved, reading in
-one neutral ink colour (the engraved-metal look of alternating solid/hollow
+"EXPLORE" is set in Urban Jungle (KC Fonts) — a distressed, urban/graffiti
+display face with a city-skyline silhouette cut into the letterforms —
+subset to the six letters it needs and inlined as base64. An external font
+URL can't work here, since the SVG loads through <img> and browsers refuse
+subresource fetches for image documents.
+
+Urban Jungle's stock licence is personal-use only and explicitly excludes
+public media (scripts/fonts/UrbanJungle-LICENSE.txt); it's used here only
+because the repo owner obtained separate permission from KC Fonts for this
+public README. Re-check that permission before reusing this font subset
+anywhere else.
+
+The rose itself is plain SVG shapes, no font involved, reading in one
+neutral ink colour (the engraved-metal look of alternating solid/hollow
 spikes); the letters instead get one continuous amber-to-rust gradient
 swept across the whole word — an old-map/brass-compass feel, deliberately
 not the blue-to-violet gradient that's become an "AI product" cliché, and
@@ -32,7 +41,7 @@ import os
 from fontTools.ttLib import TTFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FONT_FILE = os.path.join(HERE, "fonts", "fredoka-explore.woff2")
+FONT_FILE = os.path.join(HERE, "fonts", "urbanjungle-explore.woff2")
 WORD = "EXPLORE"
 
 LIGHT = dict(ink="#2d333b", dim="#8c959f", rule="#c7ced6", face="#ffffff",
@@ -63,8 +72,8 @@ def advance(ch, upm, hmtx, cmap):
 def font_face():
     with open(FONT_FILE, "rb") as f:
         b64 = base64.b64encode(f.read()).decode("ascii")
-    return (f"@font-face{{font-family:Fredoka;font-style:normal;"
-            f"font-weight:600;font-display:block;"
+    return (f"@font-face{{font-family:UrbanJungle;font-style:normal;"
+            f"font-weight:400;font-display:block;"
             f"src:url(data:font/woff2;base64,{b64}) format('woff2')}}")
 
 
@@ -181,7 +190,7 @@ def letter(ch, x, base_y, delay):
         f'values="0,14;0,0" begin="{delay:.2f}s" dur="0.5s" fill="freeze" '
         f'calcMode="spline" keySplines="{EASE}"/>'
         f'<text x="{x:.1f}" y="{base_y:.1f}" fill="url(#wordGrad)" '
-        f'font-family="Fredoka" font-size="{FONT_SIZE}">{safe}</text>'
+        f'font-family="UrbanJungle" font-size="{FONT_SIZE}">{safe}</text>'
         f'</g>'
     )
 
