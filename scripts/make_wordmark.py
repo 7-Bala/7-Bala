@@ -186,9 +186,10 @@ def build_svg():
     x = float(PAD)
     letters_svg, rose_svg, slot_cx, r = [], "", 0.0, 0.0
     non_o_i = 0
-    # Letters wait until the compass has both landed centre-stage AND
-    # glided over to its slot — see the timing block below.
-    letter_start = 1.85
+    # Letters wait until the compass has both landed centre-stage and
+    # glided over to its slot — matches glide_end below.
+    glide_hold_end, glide_end = 1.25, 1.85
+    letter_start = glide_end
     for i, ch in enumerate(WORD):
         if i == o_index:
             r = widths[i] / 2 * 1.08
@@ -201,16 +202,26 @@ def build_svg():
 
     # The rose is built at its true final position (slot_cx) so all of its
     # own internal pivot math is correct, then wrapped in a group that
-    # starts shifted to dead centre and glides over to (0,0) offset — i.e.
-    # it plays its whole entrance centre-stage, then moves into the word.
+    # holds it shifted to dead centre while it plays its own entrance, and
+    # only then glides over to its (0,0) offset — i.e. true position.
+    #
+    # This can't be a plain begin="1.25s" two-keyframe animation: SMIL only
+    # applies an animation's value once it's active, so before begin the
+    # attribute would sit at its base (identity) value — meaning the rose
+    # would render at its TRUE position the whole time and then jump to
+    # the centre offset the instant the animation started, before gliding
+    # back. Using one animation with a flat hold segment (two identical
+    # keyframes) followed by the real move avoids that jump entirely.
     rose_svg = rose(slot_cx, cap_center_y, r)
     canvas_cx = width / 2
     offset_x = canvas_cx - slot_cx
+    hold_frac = glide_hold_end / glide_end
     rose_svg = (
         f'<g>'
         f'<animateTransform attributeName="transform" type="translate" '
-        f'values="{offset_x:.1f},0;0,0" begin="1.25s" dur="0.6s" '
-        f'fill="freeze" calcMode="spline" keySplines="{EASE}"/>'
+        f'values="{offset_x:.1f},0;{offset_x:.1f},0;0,0" '
+        f'keyTimes="0;{hold_frac:.4f};1" begin="0s" dur="{glide_end}s" '
+        f'fill="freeze" calcMode="spline" keySplines="{EASE};{EASE}"/>'
         f'{rose_svg}</g>'
     )
 
