@@ -72,12 +72,24 @@ INTRO_DELAY = LID_OPEN_BEGIN + LID_OPEN_DUR + INTRO_GAP
 # real 16:10 laptop ratio, rather than shrink-wrapped to the content — the
 # content sits centred inside it. Shrink-wrapping to the content is what
 # made the whole laptop read as an odd flat letterbox.
+#
+# Modelled on the MacBook Air M4 (Sky Blue): a unibody slab, not a flared
+# wedge, so the base is only a hair wider than the lid — and the lid itself
+# is layered blue-aluminium edge -> black bezel -> screen, with a camera
+# notch at the top, the way the real thing is.
 SCREEN_RATIO = 16 / 10
-INNER_PAD = 12   # between the content's own bounding box and the screen surface
-FRAME = 10       # bezel frame thickness around the screen surface
-FLARE = 20       # how much wider the base is than the screen, each side
+INNER_PAD = 12    # between the content's own bounding box and the screen surface
+FRAME = 9         # black bezel thickness around the screen surface
+LID_EDGE = 5      # thin blue-aluminium edge around the black bezel
+FLARE = 5         # how much wider the unibody base is than the lid, each side
 TOP_PAD = 16
 BOTTOM_PAD = 10
+
+MB_BLUE = "#b7cede"        # chassis — MacBook Air M4 "Sky Blue"
+MB_BLUE_EDGE = "#93aec8"   # chassis shading / stroke
+MB_BLACK = "#1b1c1e"       # screen bezel + keyboard well
+MB_KEY = "#3a3d42"         # individual keycaps
+MB_TRACKPAD = "#9fb3c8"    # trackpad's barely-there outline
 HINGE_GAP = 3
 
 
@@ -298,50 +310,96 @@ def build_svg():
     screen_w = inner_w + FRAME * 2
     screen_h = inner_h + FRAME * 2
 
-    base_h = screen_w * 0.11
-    width = int(screen_w + FLARE * 2)
-    screen_left = FLARE
-    screen_top = TOP_PAD
-    hinge_y = screen_top + screen_h
+    lid_w = screen_w + LID_EDGE * 2
+    lid_h = screen_h + LID_EDGE * 2
+    base_h = lid_w * 0.17
+    width = int(lid_w + FLARE * 2)
+    lid_left = FLARE
+    screen_left = lid_left + LID_EDGE
+    screen_top = TOP_PAD + LID_EDGE
+    hinge_y = TOP_PAD + lid_h
     base_top = hinge_y + HINGE_GAP
     base_bottom = base_top + base_h
     height = int(base_bottom + BOTTOM_PAD)
-    lid_cx = screen_left + screen_w / 2
+    lid_cx = lid_left + lid_w / 2
 
-    # Base: a trapezoid a little wider than the screen, with a trackpad and
-    # a few key-row hints so it reads as a keyboard deck, not a plain wedge.
-    pad_w, pad_h = base_h * 1.6, base_h * 0.55
-    pad_x, pad_y = lid_cx - pad_w / 2, base_top + base_h * 0.28
-    keys_y = base_top + base_h * 0.22
-    key_row = "".join(
-        f'<line x1="{screen_left + screen_w * f0:.1f}" y1="{keys_y:.1f}" '
-        f'x2="{screen_left + screen_w * f1:.1f}" y2="{keys_y:.1f}" '
-        f'class="rule" stroke-width="1"/>'
-        for f0, f1 in ((0.08, 0.34), (0.66, 0.92))
-    )
+    # Base: a unibody slab only a little wider than the lid (a real MacBook
+    # Air's base is barely flared, unlike the old generic-laptop-icon wedge),
+    # with a proper keyboard well — a grid of keys plus a wide spacebar —
+    # and a big, barely-bordered trackpad, the way the Air actually looks.
+    # A plain rounded rect (rather than a hand-rolled trapezoid path) gives
+    # the same subtle overhang with no geometry to get wrong; the tiny bit
+    # of rounding at the top corners sits under the hinge bar, unseen.
+    base_w = width
     base = (
-        f'<path d="M{screen_left:.1f} {base_top:.1f}'
-        f'L{screen_left + screen_w:.1f} {base_top:.1f}'
-        f'L{width:.1f} {base_bottom:.1f}'
-        f'L0 {base_bottom:.1f}Z" class="dim rule" stroke-width="1"/>'
-        f'{key_row}'
-        f'<rect x="{pad_x:.1f}" y="{pad_y:.1f}" width="{pad_w:.1f}" '
-        f'height="{pad_h:.1f}" rx="{pad_h * 0.25:.1f}" fill="none" '
-        f'class="rule" stroke-width="1"/>'
+        f'<rect x="0" y="{base_top:.1f}" width="{base_w:.1f}" '
+        f'height="{base_h:.1f}" rx="10" fill="{MB_BLUE}" '
+        f'stroke="{MB_BLUE_EDGE}" stroke-width="1"/>'
         f'<rect x="{lid_cx - 16:.1f}" y="{hinge_y:.1f}" width="32" '
-        f'height="{HINGE_GAP + 1}" rx="1.5" class="ink"/>'
+        f'height="{HINGE_GAP + 1}" rx="1.5" fill="{MB_BLUE_EDGE}"/>'
     )
 
+    deck_pad = base_w * 0.045
+    well_x, well_y = deck_pad, base_top + base_h * 0.12
+    well_w, well_h = base_w - deck_pad * 2, base_h * 0.6
+    base += (
+        f'<rect x="{well_x:.1f}" y="{well_y:.1f}" width="{well_w:.1f}" '
+        f'height="{well_h:.1f}" rx="{base_h * 0.09:.1f}" fill="{MB_BLACK}"/>'
+    )
+
+    # Key grid: three normal rows plus a bottom row with a wide spacebar.
+    gap = base_h * 0.045
+    rows, cols = 3, 13
+    row_h = (well_h * 0.78 - gap * (rows + 1)) / rows
+    row_w = well_w - gap * 2
+    key_w = (row_w - gap * (cols - 1)) / cols
+    for r in range(rows):
+        ky = well_y + gap + r * (row_h + gap)
+        for c in range(cols):
+            kx = well_x + gap + c * (key_w + gap)
+            base += (f'<rect x="{kx:.1f}" y="{ky:.1f}" width="{key_w:.1f}" '
+                      f'height="{row_h:.1f}" rx="{row_h * 0.22:.1f}" '
+                      f'fill="{MB_KEY}"/>')
+    bar_y = well_y + gap + rows * (row_h + gap)
+    bar_h = well_h * 0.78 - rows * (row_h + gap)
+    space_w = well_w * 0.42
+    for x0, w0 in ((gap, well_w * 0.16), (well_w - gap - well_w * 0.16, well_w * 0.16)):
+        base += (f'<rect x="{well_x + x0:.1f}" y="{bar_y:.1f}" width="{w0:.1f}" '
+                  f'height="{bar_h:.1f}" rx="{bar_h * 0.25:.1f}" fill="{MB_KEY}"/>')
+    base += (f'<rect x="{well_x + well_w / 2 - space_w / 2:.1f}" y="{bar_y:.1f}" '
+              f'width="{space_w:.1f}" height="{bar_h:.1f}" rx="{bar_h * 0.25:.1f}" '
+              f'fill="{MB_KEY}"/>')
+
+    pad_w, pad_h = base_h * 1.7, base_h * 0.7
+    pad_x = lid_cx - pad_w / 2
+    pad_y = well_y + well_h + (base_bottom - (well_y + well_h) - pad_h) / 2
+    base += (
+        f'<rect x="{pad_x:.1f}" y="{pad_y:.1f}" width="{pad_w:.1f}" '
+        f'height="{pad_h:.1f}" rx="{pad_h * 0.22:.1f}" fill="none" '
+        f'stroke="{MB_TRACKPAD}" stroke-width="1"/>'
+    )
+
+    # Lid: a thin blue-aluminium edge, then a black bezel, then the screen
+    # surface, with a small camera notch dipping into the top of the screen.
+    lid_edge = (
+        f'<rect x="{lid_left:.1f}" y="{TOP_PAD:.1f}" width="{lid_w:.1f}" '
+        f'height="{lid_h:.1f}" rx="12" fill="{MB_BLUE}" '
+        f'stroke="{MB_BLUE_EDGE}" stroke-width="1"/>'
+    )
     bezel = (
         f'<rect x="{screen_left:.1f}" y="{screen_top:.1f}" '
-        f'width="{screen_w:.1f}" height="{screen_h:.1f}" rx="10" '
-        f'class="dim rule" stroke-width="1"/>'
+        f'width="{screen_w:.1f}" height="{screen_h:.1f}" rx="8" '
+        f'fill="{MB_BLACK}"/>'
     )
     inner_x, inner_y = screen_left + FRAME, screen_top + FRAME
     surface = (
         f'<rect x="{inner_x:.1f}" y="{inner_y:.1f}" width="{inner_w:.1f}" '
         f'height="{inner_h:.1f}" rx="4" class="face"/>'
     )
+    notch_w, notch_h = inner_w * 0.1, 7
+    notch = (f'<rect x="{lid_cx - notch_w / 2:.1f}" y="{inner_y - 1:.1f}" '
+              f'width="{notch_w:.1f}" height="{notch_h:.1f}" rx="3.5" '
+              f'fill="{MB_BLACK}"/>')
     clip = (f'<clipPath id="screen"><rect x="{inner_x:.1f}" y="{inner_y:.1f}" '
             f'width="{inner_w:.1f}" height="{inner_h:.1f}" rx="4"/></clipPath>')
     content_x = inner_x + (inner_w - content_w) / 2
@@ -352,7 +410,8 @@ def build_svg():
         f'{content_svg}</g></g>'
     )
 
-    lid = _lid_open(lid_cx, hinge_y, bezel + surface + clip + screen_content)
+    lid = _lid_open(lid_cx, hinge_y,
+                     lid_edge + bezel + surface + clip + screen_content + notch)
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '
