@@ -56,7 +56,7 @@ EASE = "0.16 1 0.3 1"
 # compass sequence (rose + letters) begins. INTRO_DELAY is added to every
 # begin= time in the content below so nothing plays while the screen is
 # still tipping open.
-LID_OPEN_BEGIN = 0.15
+LID_OPEN_BEGIN = 0.15   # a short beat with the lid shut, before it opens
 LID_OPEN_DUR = 0.75
 INTRO_GAP = 0.15
 INTRO_DELAY = LID_OPEN_BEGIN + LID_OPEN_DUR + INTRO_GAP
@@ -252,14 +252,25 @@ def _lid_open(lid_cx, hinge_y, inner_svg):
     """scaleY-from-the-hinge: the flat-SVG trick for a lid tipping open,
     since SVG transforms can't rotate something on a horizontal 3D axis.
     Nested translate -> scale -> translate-back so the scale happens
-    around the hinge point rather than the shape's own origin."""
+    around the hinge point rather than the shape's own origin.
+
+    Can't be a plain begin="0.15s" two-keyframe animation: SMIL only
+    applies an animation's value once it's active, so before begin the
+    lid would sit at its base (identity, i.e. fully OPEN) scale — meaning
+    it would render open from the first frame and then snap shut the
+    instant the animation started, before opening again. One animation
+    with a flat hold segment (two identical closed keyframes) covering
+    that initial beat, followed by the real open move, avoids that.
+    """
+    total = LID_OPEN_BEGIN + LID_OPEN_DUR
+    hold_frac = LID_OPEN_BEGIN / total
     return (
         f'<g transform="translate({lid_cx:.1f},{hinge_y:.1f})">'
         f'<g>'
         f'<animateTransform attributeName="transform" type="scale" '
-        f'values="1,0.035;1,1" begin="{LID_OPEN_BEGIN:.2f}s" '
-        f'dur="{LID_OPEN_DUR:.2f}s" fill="freeze" calcMode="spline" '
-        f'keySplines="{EASE}"/>'
+        f'values="1,0.035;1,0.035;1,1" keyTimes="0;{hold_frac:.4f};1" '
+        f'begin="0s" dur="{total:.2f}s" fill="freeze" calcMode="spline" '
+        f'keySplines="{EASE};{EASE}"/>'
         f'<g transform="translate({-lid_cx:.1f},{-hinge_y:.1f})">'
         f'{inner_svg}</g></g></g>'
     )
