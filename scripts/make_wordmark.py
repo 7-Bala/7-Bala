@@ -19,8 +19,11 @@ inlined as base64 — an external font URL can't work here, since the SVG
 loads through <img> and browsers refuse subresource fetches for image
 documents. The rose itself is plain SVG shapes, no font involved, reading in
 one neutral ink colour (the engraved-metal look of alternating solid/hollow
-spikes); the letters get their own single accent colour instead of that
-neutral ink, so the wordmark doesn't read as flat grey text.
+spikes); the letters instead get one continuous amber-to-rust gradient
+swept across the whole word — an old-map/brass-compass feel, deliberately
+not the blue-to-violet gradient that's become an "AI product" cliché, and
+distinct from a per-letter rainbow: one hue drifting into another, not a
+row of unrelated colours.
 """
 import base64
 import math
@@ -33,9 +36,9 @@ FONT_FILE = os.path.join(HERE, "fonts", "fredoka-explore.woff2")
 WORD = "EXPLORE"
 
 LIGHT = dict(ink="#2d333b", dim="#8c959f", rule="#c7ced6", face="#ffffff",
-             word="#1f6feb")
+             word1="#b45309", word2="#9a3412")
 DARK = dict(ink="#f0f6fc", dim="#8b949e", rule="#30363d", face="#0d1117",
-            word="#58a6ff")
+            word1="#fbbf24", word2="#f97316")
 
 FONT_SIZE = 84
 LETTER_GAP = 13
@@ -69,9 +72,22 @@ def style_defs():
     def block(t):
         return (f".ink{{fill:{t['ink']};stroke:{t['ink']}}}"
                 f".dim{{stroke:{t['dim']}}}.rule{{stroke:{t['rule']}}}"
-                f".face{{fill:{t['face']}}}.word{{fill:{t['word']}}}")
+                f".face{{fill:{t['face']}}}"
+                f".gs1{{stop-color:{t['word1']}}}.gs2{{stop-color:{t['word2']}}}")
     return (f"<style>{font_face()}{block(LIGHT)}"
             f"@media(prefers-color-scheme:dark){{{block(DARK)}}}</style>")
+
+
+def word_gradient(x0, x1, y):
+    """One continuous gradient swept across the whole word — amber into
+    rust, like an old map or a brass compass case, rather than the
+    blue-to-violet "AI product" gradient cliché, and distinct from a
+    per-letter rainbow: it's one hue drifting into another, not a row of
+    unrelated colours."""
+    return (f'<linearGradient id="wordGrad" gradientUnits="userSpaceOnUse" '
+            f'x1="{x0:.1f}" y1="{y:.1f}" x2="{x1:.1f}" y2="{y:.1f}">'
+            f'<stop offset="0%" class="gs1"/><stop offset="100%" class="gs2"/>'
+            f'</linearGradient>')
 
 
 def spike(cx, cy, deg, length, half_w):
@@ -164,7 +180,7 @@ def letter(ch, x, base_y, delay):
         f'<animateTransform attributeName="transform" type="translate" '
         f'values="0,14;0,0" begin="{delay:.2f}s" dur="0.5s" fill="freeze" '
         f'calcMode="spline" keySplines="{EASE}"/>'
-        f'<text x="{x:.1f}" y="{base_y:.1f}" class="word" '
+        f'<text x="{x:.1f}" y="{base_y:.1f}" fill="url(#wordGrad)" '
         f'font-family="Fredoka" font-size="{FONT_SIZE}">{safe}</text>'
         f'</g>'
     )
@@ -227,6 +243,7 @@ def build_svg():
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '
         f'height="{height}" viewBox="0 0 {width} {height}">',
         style_defs(),
+        word_gradient(PAD, width - PAD, base_y),
         rose_svg,
         "".join(letters_svg),
         "</svg>",
