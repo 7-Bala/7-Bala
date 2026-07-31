@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Draw ascii.svg — a laptop opens, then "EXPLORE" plays on its screen.
-
-The lid starts shut (a thin sliver flat against the base) and opens with a
-scaleY-from-the-hinge move — the standard flat-SVG trick for faking a lid
-tipping toward the viewer, since SVG has no real 3D transform to rotate it
-on a horizontal axis. Once it's fully open, everything below plays inside
-the screen, unchanged from before: a compass rose standing in for the O.
+"""Draw ascii.svg — "EXPLORE" with a compass rose standing in for the O.
 
 The rose is two rigid pieces. The housing — rim, inner ring, tick marks —
 pops in once and stays fixed, like a real compass's dial. The blades — the
@@ -52,56 +46,6 @@ PAD = 30
 # as one motion language rather than a pile of different easings.
 EASE = "0.16 1 0.3 1"
 
-# The lid alone uses a plain ease-in-out instead: EASE is heavily front-
-# loaded (76% open at just 20% of the duration), which reads as a snap
-# rather than a physical hinge lifting. A hinge should move at a more even
-# pace throughout.
-LID_EASE = "0.45 0 0.2 1"
-
-# Laptop timing: the lid opens first, then — once it's fully open — the
-# compass sequence (rose + letters) begins. INTRO_DELAY is added to every
-# begin= time in the content below so nothing plays while the screen is
-# still tipping open.
-LID_OPEN_BEGIN = 0.15   # a short beat with the lid shut, before it opens
-LID_OPEN_DUR = 0.75
-INTRO_GAP = 0.15
-INTRO_DELAY = LID_OPEN_BEGIN + LID_OPEN_DUR + INTRO_GAP
-
-# Laptop geometry. The content (508x150) is much wider and flatter than any
-# real screen, so the screen's own proportions are set independently, to a
-# real 16:10 laptop ratio, rather than shrink-wrapped to the content — the
-# content sits centred inside it. Shrink-wrapping to the content is what
-# made the whole laptop read as an odd flat letterbox.
-#
-# Modelled on the MacBook Air M4 (Sky Blue): a unibody slab, not a flared
-# wedge, so the base is only a hair wider than the lid — and the lid itself
-# is layered blue-aluminium edge -> black bezel -> screen, with a camera
-# notch at the top, the way the real thing is.
-SCREEN_RATIO = 16 / 10
-INNER_PAD = 12    # between the content's own bounding box and the screen surface
-FRAME = 6         # black bezel thickness around the screen surface — thin,
-                  # like the real Air's slim border, not a thick old-laptop frame
-LID_EDGE = 2      # hairline blue-aluminium edge around the black bezel
-FLARE = 5         # how much wider the unibody base is than the lid, each side
-TOP_PAD = 16
-BOTTOM_PAD = 10
-
-# A static, non-animated shear applied to the whole laptop at the very end
-# (after everything else, animation included, is otherwise already correct)
-# — so it reads as viewed slightly from its right, screen turned a touch to
-# the left, rather than dead-on. A pure front view is exactly what made the
-# scaleY lid-open trick look like a flat squash instead of a hinge turning
-# in depth: with an implied turn already in the static pose, that same
-# motion reads as rotation, not a squash.
-SKEW_DEG = -6
-
-MB_BLUE = "#b7cede"        # chassis — MacBook Air M4 "Sky Blue"
-MB_BLUE_EDGE = "#93aec8"   # chassis shading / stroke
-MB_BLACK = "#1b1c1e"       # screen bezel + keyboard well
-MB_KEY = "#3a3d42"         # individual keycaps
-MB_TRACKPAD = "#9fb3c8"    # trackpad's barely-there outline
-HINGE_GAP = 3
-
 
 def metrics():
     f = TTFont(FONT_FILE)
@@ -124,8 +68,7 @@ def font_face():
 def style_defs():
     def block(t):
         return (f".ink{{fill:{t['ink']};stroke:{t['ink']}}}"
-                f".dim{{fill:{t['dim']};stroke:{t['dim']}}}"
-                f".rule{{stroke:{t['rule']}}}"
+                f".dim{{stroke:{t['dim']}}}.rule{{stroke:{t['rule']}}}"
                 f".face{{fill:{t['face']}}}.word{{fill:{t['word']}}}")
     return (f"<style>{font_face()}{block(LIGHT)}"
             f"@media(prefers-color-scheme:dark){{{block(DARK)}}}</style>")
@@ -160,13 +103,12 @@ def _pop_in(cx, cy, delay, dur, inner_svg):
     )
 
 
-def rose(cx, cy, r, t0):
+def rose(cx, cy, r):
     """A compass rose split into two rigid pieces: the housing (rim, inner
-    ring, tick marks) pops in once and stays fixed like a real compass's
-    dial — and the blades (the 8-point star + centre pivot) spin in once on
-    entrance and then freeze, like a needle that's found its heading and
-    stopped. t0 shifts the whole entrance later, e.g. until after a laptop
-    lid has finished opening."""
+    ring, tick marks) pops in once and then stays fixed like a real
+    compass's dial — and the blades (the 8-point star + centre pivot)
+    spin in on entrance and then keep spinning slowly forever, like a
+    needle that never quite stops searching."""
     circumference = 2 * math.pi * r
     housing = [
         f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" fill="none" '
@@ -174,7 +116,7 @@ def rose(cx, cy, r, t0):
         f'stroke-dasharray="{circumference:.1f}" '
         f'stroke-dashoffset="{circumference:.1f}">'
         f'<animate attributeName="stroke-dashoffset" '
-        f'from="{circumference:.1f}" to="0" begin="{t0 + 0.05:.2f}s" dur="0.6s" '
+        f'from="{circumference:.1f}" to="0" begin="0.05s" dur="0.6s" '
         f'fill="freeze" calcMode="spline" keySplines="{EASE}"/></circle>',
         '<circle cx="{:.1f}" cy="{:.1f}" r="{:.1f}" fill="none" '
         'class="rule" stroke-width="1"/>'.format(cx, cy, r * 0.74),
@@ -197,15 +139,18 @@ def rose(cx, cy, r, t0):
     blades.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r * 0.06:.1f}" '
                   f'class="ink"/>')
 
-    housing_group = _pop_in(cx, cy, t0 + 0.05, 0.6, "".join(housing))
+    housing_group = _pop_in(cx, cy, 0.05, 0.6, "".join(housing))
 
+    # Blades: one entrance spin only — several turns, decelerating into a
+    # stop on the shared ease — then frozen there for good. No idle loop:
+    # it spins once, the way it did the first time the page opened, and
+    # then it's a still logo mark, not something that keeps turning.
     blade_group = (
         f'<g>'
         f'<animateTransform attributeName="transform" type="rotate" '
-        f'values="-760 {cx:.1f} {cy:.1f};0 {cx:.1f} {cy:.1f}" '
-        f'begin="{t0 + 0.05:.2f}s" dur="1.1s" fill="freeze" '
-        f'calcMode="spline" keySplines="{EASE}"/>'
-        f'{_pop_in(cx, cy, t0 + 0.05, 1.1, "".join(blades))}'
+        f'values="-760 {cx:.1f} {cy:.1f};0 {cx:.1f} {cy:.1f}" begin="0.05s" '
+        f'dur="1.1s" fill="freeze" calcMode="spline" keySplines="{EASE}"/>'
+        f'{_pop_in(cx, cy, 0.05, 1.1, "".join(blades))}'
         f'</g>'
     )
     return housing_group + blade_group
@@ -225,9 +170,7 @@ def letter(ch, x, base_y, delay):
     )
 
 
-def _content(t0):
-    """The compass + wordmark, exactly as before, with every animation's
-    begin= time shifted by t0 (so it can wait for the laptop lid)."""
+def build_svg():
     upm, hmtx, cmap = metrics()
     widths = [advance(c, upm, hmtx, cmap) for c in WORD]
     total_w = sum(widths) + LETTER_GAP * (len(WORD) - 1)
@@ -239,10 +182,12 @@ def _content(t0):
 
     o_index = WORD.index("O")
     x = float(PAD)
-    letters_svg, slot_cx, r = [], 0.0, 0.0
+    letters_svg, rose_svg, slot_cx, r = [], "", 0.0, 0.0
     non_o_i = 0
+    # Letters wait until the compass has both landed centre-stage and
+    # glided over to its slot — matches glide_end below.
     glide_hold_end, glide_end = 1.25, 1.85
-    letter_start = t0 + glide_end
+    letter_start = glide_end
     for i, ch in enumerate(WORD):
         if i == o_index:
             r = widths[i] / 2 * 1.08
@@ -258,14 +203,14 @@ def _content(t0):
     # holds it shifted to dead centre while it plays its own entrance, and
     # only then glides over to its (0,0) offset — i.e. true position.
     #
-    # This can't be a plain two-keyframe animation starting mid-timeline:
-    # SMIL only applies an animation's value once it's active, so before
-    # begin the attribute would sit at its base (identity) value — meaning
-    # the rose would render at its TRUE position the whole time and then
-    # jump to the centre offset the instant the animation started, before
-    # gliding back. One animation with a flat hold segment (two identical
+    # This can't be a plain begin="1.25s" two-keyframe animation: SMIL only
+    # applies an animation's value once it's active, so before begin the
+    # attribute would sit at its base (identity) value — meaning the rose
+    # would render at its TRUE position the whole time and then jump to
+    # the centre offset the instant the animation started, before gliding
+    # back. Using one animation with a flat hold segment (two identical
     # keyframes) followed by the real move avoids that jump entirely.
-    rose_svg = rose(slot_cx, cap_center_y, r, t0)
+    rose_svg = rose(slot_cx, cap_center_y, r)
     canvas_cx = width / 2
     offset_x = canvas_cx - slot_cx
     hold_frac = glide_hold_end / glide_end
@@ -273,183 +218,17 @@ def _content(t0):
         f'<g>'
         f'<animateTransform attributeName="transform" type="translate" '
         f'values="{offset_x:.1f},0;{offset_x:.1f},0;0,0" '
-        f'keyTimes="0;{hold_frac:.4f};1" begin="{t0:.2f}s" dur="{glide_end}s" '
+        f'keyTimes="0;{hold_frac:.4f};1" begin="0s" dur="{glide_end}s" '
         f'fill="freeze" calcMode="spline" keySplines="{EASE};{EASE}"/>'
         f'{rose_svg}</g>'
     )
-    return rose_svg + "".join(letters_svg), width, height
-
-
-def _lid_open(lid_cx, hinge_y, inner_svg):
-    """scaleY-from-the-hinge: the flat-SVG trick for a lid tipping open,
-    since SVG transforms can't rotate something on a horizontal 3D axis.
-    Nested translate -> scale -> translate-back so the scale happens
-    around the hinge point rather than the shape's own origin.
-
-    Can't be a plain begin="0.15s" two-keyframe animation: SMIL only
-    applies an animation's value once it's active, so before begin the
-    lid would sit at its base (identity, i.e. fully OPEN) scale — meaning
-    it would render open from the first frame and then snap shut the
-    instant the animation started, before opening again. One animation
-    with a flat hold segment (two identical closed keyframes) covering
-    that initial beat, followed by the real open move, avoids that.
-    """
-    total = LID_OPEN_BEGIN + LID_OPEN_DUR
-    hold_frac = LID_OPEN_BEGIN / total
-    return (
-        f'<g transform="translate({lid_cx:.1f},{hinge_y:.1f})">'
-        f'<g>'
-        f'<animateTransform attributeName="transform" type="scale" '
-        f'values="1,0.035;1,0.035;1,1" keyTimes="0;{hold_frac:.4f};1" '
-        f'begin="0s" dur="{total:.2f}s" fill="freeze" calcMode="spline" '
-        f'keySplines="{EASE};{LID_EASE}"/>'
-        f'<g transform="translate({-lid_cx:.1f},{-hinge_y:.1f})">'
-        f'{inner_svg}</g></g></g>'
-    )
-
-
-def build_svg():
-    content_svg, content_w, content_h = _content(INTRO_DELAY)
-
-    # The screen keeps a real 16:10 ratio, sized to fit the content's width;
-    # the content sits centred inside it rather than dictating its shape, so
-    # there's headroom above/below it the way a wide logo would look small
-    # and centred on an actual laptop's screen.
-    inner_w = content_w + INNER_PAD * 2
-    inner_h = max(content_h + INNER_PAD * 2, inner_w / SCREEN_RATIO)
-    screen_w = inner_w + FRAME * 2
-    screen_h = inner_h + FRAME * 2
-
-    lid_w = screen_w + LID_EDGE * 2
-    lid_h = screen_h + LID_EDGE * 2
-    base_h = lid_w * 0.17
-    width = int(lid_w + FLARE * 2)
-    lid_left = FLARE
-    screen_left = lid_left + LID_EDGE
-    screen_top = TOP_PAD + LID_EDGE
-    hinge_y = TOP_PAD + lid_h
-    base_top = hinge_y + HINGE_GAP
-    base_bottom = base_top + base_h
-    height = int(base_bottom + BOTTOM_PAD)
-    lid_cx = lid_left + lid_w / 2
-
-    # Base: a unibody slab only a little wider than the lid (a real MacBook
-    # Air's base is barely flared, unlike the old generic-laptop-icon wedge),
-    # with a proper keyboard well — a grid of keys plus a wide spacebar —
-    # and a big, barely-bordered trackpad, the way the Air actually looks.
-    # A plain rounded rect (rather than a hand-rolled trapezoid path) gives
-    # the same subtle overhang with no geometry to get wrong; the tiny bit
-    # of rounding at the top corners sits under the hinge bar, unseen.
-    base_w = width
-    base = (
-        f'<rect x="0" y="{base_top:.1f}" width="{base_w:.1f}" '
-        f'height="{base_h:.1f}" rx="10" fill="{MB_BLUE}" '
-        f'stroke="{MB_BLUE_EDGE}" stroke-width="1"/>'
-        f'<rect x="{lid_cx - 16:.1f}" y="{hinge_y:.1f}" width="32" '
-        f'height="{HINGE_GAP + 1}" rx="1.5" fill="{MB_BLUE_EDGE}"/>'
-    )
-
-    # Vertical layout of the deck, as fractions of base_h that sum to <=1:
-    # margin, keyboard well, a gap, the trackpad, then a bottom margin.
-    # (The previous version set well_h and pad_h independently and they
-    # overflowed past base_bottom — the trackpad rendered half off the
-    # bottom edge of the laptop entirely.)
-    top_f, well_f, gap_f, pad_f = 0.09, 0.50, 0.06, 0.27
-    deck_pad = base_w * 0.045
-    well_x, well_y = deck_pad, base_top + base_h * top_f
-    well_w, well_h = base_w - deck_pad * 2, base_h * well_f
-    base += (
-        f'<rect x="{well_x:.1f}" y="{well_y:.1f}" width="{well_w:.1f}" '
-        f'height="{well_h:.1f}" rx="{base_h * 0.09:.1f}" fill="{MB_BLACK}"/>'
-    )
-
-    # Key grid: three normal rows plus a bottom row with a wide spacebar.
-    gap = base_h * 0.045
-    rows, cols = 3, 13
-    row_h = (well_h * 0.78 - gap * (rows + 1)) / rows
-    row_w = well_w - gap * 2
-    key_w = (row_w - gap * (cols - 1)) / cols
-    for r in range(rows):
-        ky = well_y + gap + r * (row_h + gap)
-        for c in range(cols):
-            kx = well_x + gap + c * (key_w + gap)
-            base += (f'<rect x="{kx:.1f}" y="{ky:.1f}" width="{key_w:.1f}" '
-                      f'height="{row_h:.1f}" rx="{row_h * 0.22:.1f}" '
-                      f'fill="{MB_KEY}"/>')
-    bar_y = well_y + gap + rows * (row_h + gap)
-    bar_h = well_h * 0.78 - rows * (row_h + gap)
-    space_w = well_w * 0.42
-    for x0, w0 in ((gap, well_w * 0.16), (well_w - gap - well_w * 0.16, well_w * 0.16)):
-        base += (f'<rect x="{well_x + x0:.1f}" y="{bar_y:.1f}" width="{w0:.1f}" '
-                  f'height="{bar_h:.1f}" rx="{bar_h * 0.25:.1f}" fill="{MB_KEY}"/>')
-    base += (f'<rect x="{well_x + well_w / 2 - space_w / 2:.1f}" y="{bar_y:.1f}" '
-              f'width="{space_w:.1f}" height="{bar_h:.1f}" rx="{bar_h * 0.25:.1f}" '
-              f'fill="{MB_KEY}"/>')
-
-    pad_w, pad_h = well_w * 0.32, base_h * pad_f
-    pad_x = lid_cx - pad_w / 2
-    pad_y = well_y + well_h + base_h * gap_f
-    base += (
-        f'<rect x="{pad_x:.1f}" y="{pad_y:.1f}" width="{pad_w:.1f}" '
-        f'height="{pad_h:.1f}" rx="{pad_h * 0.22:.1f}" fill="none" '
-        f'stroke="{MB_TRACKPAD}" stroke-width="1"/>'
-    )
-
-    # Lid: a thin blue-aluminium edge, then a black bezel, then the screen
-    # surface, with a small camera notch dipping into the top of the screen.
-    lid_edge = (
-        f'<rect x="{lid_left:.1f}" y="{TOP_PAD:.1f}" width="{lid_w:.1f}" '
-        f'height="{lid_h:.1f}" rx="9" fill="{MB_BLUE}" '
-        f'stroke="{MB_BLUE_EDGE}" stroke-width="1"/>'
-    )
-    bezel = (
-        f'<rect x="{screen_left:.1f}" y="{screen_top:.1f}" '
-        f'width="{screen_w:.1f}" height="{screen_h:.1f}" rx="7" '
-        f'fill="{MB_BLACK}"/>'
-    )
-    inner_x, inner_y = screen_left + FRAME, screen_top + FRAME
-    surface = (
-        f'<rect x="{inner_x:.1f}" y="{inner_y:.1f}" width="{inner_w:.1f}" '
-        f'height="{inner_h:.1f}" rx="3" class="face"/>'
-    )
-    # A real Air's notch is small relative to the screen — roughly 7-8% of
-    # the width and barely tall enough to read as a pill, not a wide tab.
-    notch_w, notch_h = inner_w * 0.075, 5.5
-    notch = (f'<rect x="{lid_cx - notch_w / 2:.1f}" y="{inner_y:.1f}" '
-              f'width="{notch_w:.1f}" height="{notch_h:.1f}" '
-              f'rx="{notch_h / 2:.1f}" fill="{MB_BLACK}"/>')
-    clip = (f'<clipPath id="screen"><rect x="{inner_x:.1f}" y="{inner_y:.1f}" '
-            f'width="{inner_w:.1f}" height="{inner_h:.1f}" rx="4"/></clipPath>')
-    content_x = inner_x + (inner_w - content_w) / 2
-    content_y = inner_y + (inner_h - content_h) / 2
-    screen_content = (
-        f'<g clip-path="url(#screen)">'
-        f'<g transform="translate({content_x:.1f},{content_y:.1f})">'
-        f'{content_svg}</g></g>'
-    )
-
-    lid = _lid_open(lid_cx, hinge_y,
-                     lid_edge + bezel + surface + clip + screen_content + notch)
-
-    # The turn is a shear pivoted around the vertical centre (rather than
-    # the top edge), so the top and bottom lean opposite, equal amounts —
-    # a pivot-from-the-middle tilt instead of one hanging from the top —
-    # which also means only half as much extra canvas is needed on each
-    # side to avoid clipping the sheared corners.
-    cy = height / 2
-    skew_pad = int(math.ceil(cy * abs(math.tan(math.radians(SKEW_DEG))))) + 2
-    full_width = width + skew_pad * 2
 
     parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{full_width}" '
-        f'height="{height}" viewBox="0 0 {full_width} {height}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '
+        f'height="{height}" viewBox="0 0 {width} {height}">',
         style_defs(),
-        f'<g transform="translate({skew_pad},0)">',
-        f'<g transform="translate(0,{cy:.1f}) skewX({SKEW_DEG}) '
-        f'translate(0,{-cy:.1f})">',
-        base,
-        lid,
-        "</g></g>",
+        rose_svg,
+        "".join(letters_svg),
         "</svg>",
     ]
     return "".join(parts)
