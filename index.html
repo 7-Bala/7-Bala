@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GitHub README — think2thrive ➔ explore (Cosmic Violet)</title>
+  <title>GitHub README — SplitFlapText (CURIOUS → EXPLORE) with CRTWarp</title>
   <link rel="stylesheet" href="./CRTWarp.css" />
   <link rel="stylesheet" href="./SplitFlapText.css" />
   <style>
@@ -11,49 +11,47 @@
       --font-github: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
       
-      /* Pure Cosmic Violet Palette (No Blue) */
-      --color-canvas-default: #08060e;
-      --color-canvas-subtle: #120f1c;
-      --color-border-default: #2d243d;
-      --color-border-muted: #1e1829;
-      --color-fg-default: #f5f3fa;
-      --color-fg-muted: #a79cb8;
-      --color-fg-subtle: #796c8d;
-      --color-accent-violet: #c755f7;
-      --color-accent-violet-glow: rgba(199, 85, 247, 0.45);
-      --color-btn-bg: #1a1528;
-      --color-btn-border: #352a48;
-      --color-btn-hover-bg: #271f3a;
-      --color-btn-primary-bg: #a855f7;
-      --color-btn-primary-hover: #c084fc;
-      --color-btn-primary-border: #c084fc;
+      /* GitHub Dark mode (default) */
+      --color-canvas-default: #0d1117;
+      --color-canvas-subtle: #161b22;
+      --color-border-default: #30363d;
+      --color-border-muted: #21262d;
+      --color-fg-default: #f0f6fc;
+      --color-fg-muted: #8b949e;
+      --color-fg-subtle: #6e7681;
+      --color-accent-fg: #58a6ff;
+      --color-btn-bg: #21262d;
+      --color-btn-border: #30363d;
+      --color-btn-hover-bg: #30363d;
+      --color-btn-primary-bg: #238636;
+      --color-btn-primary-hover: #2ea043;
+      --color-btn-primary-border: #2ea043;
       --color-btn-primary-text: #ffffff;
-      --tag-crt-bg: rgba(199, 85, 247, 0.15);
-      --tag-crt-border: rgba(199, 85, 247, 0.35);
-      --tag-crt-color: #c755f7;
+      --tag-crt-bg: rgba(88, 166, 255, 0.12);
+      --tag-crt-border: rgba(88, 166, 255, 0.35);
+      --tag-crt-color: #58a6ff;
       --stage-height: 240px;
     }
 
     [data-theme="light"] {
-      --color-canvas-default: #faf8fd;
-      --color-canvas-subtle: #f3eff9;
-      --color-border-default: #e2d9ee;
-      --color-border-muted: #ebe4f5;
-      --color-fg-default: #1c1527;
-      --color-fg-muted: #6f6284;
-      --color-fg-subtle: #998cae;
-      --color-accent-violet: #9333ea;
-      --color-accent-violet-glow: rgba(147, 51, 234, 0.25);
-      --color-btn-bg: #f3eff9;
-      --color-btn-border: #dcd0eb;
-      --color-btn-hover-bg: #e9e1f5;
-      --color-btn-primary-bg: #9333ea;
-      --color-btn-primary-hover: #7e22ce;
-      --color-btn-primary-border: #7e22ce;
+      --color-canvas-default: #ffffff;
+      --color-canvas-subtle: #f6f8fa;
+      --color-border-default: #d0d7de;
+      --color-border-muted: #d8dee4;
+      --color-fg-default: #1f2328;
+      --color-fg-muted: #656d76;
+      --color-fg-subtle: #8c959f;
+      --color-accent-fg: #0969da;
+      --color-btn-bg: #f6f8fa;
+      --color-btn-border: #d0d7de;
+      --color-btn-hover-bg: #eff1f3;
+      --color-btn-primary-bg: #1f883d;
+      --color-btn-primary-hover: #1a7f37;
+      --color-btn-primary-border: #1a7f37;
       --color-btn-primary-text: #ffffff;
-      --tag-crt-bg: rgba(147, 51, 234, 0.12);
-      --tag-crt-border: rgba(147, 51, 234, 0.3);
-      --tag-crt-color: #9333ea;
+      --tag-crt-bg: rgba(9, 105, 218, 0.1);
+      --tag-crt-border: rgba(9, 105, 218, 0.3);
+      --tag-crt-color: #0969da;
     }
 
     * {
@@ -73,7 +71,7 @@
       flex-direction: column;
       align-items: center;
       padding: 2rem 1rem 4rem 1rem;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     header {
@@ -105,12 +103,11 @@
     .badge {
       font-size: 0.75rem;
       font-weight: 500;
-      padding: 0.15rem 0.65rem;
+      padding: 0.15rem 0.6rem;
       background: var(--tag-crt-bg);
       color: var(--tag-crt-color);
       border: 1px solid var(--tag-crt-border);
       border-radius: 9999px;
-      box-shadow: 0 0 12px rgba(199, 85, 247, 0.18);
       font-family: var(--font-github);
     }
 
@@ -126,7 +123,7 @@
       border: 1px solid var(--color-btn-border);
       background: var(--color-btn-bg);
       color: var(--color-fg-default);
-      padding: 0.4rem 0.9rem;
+      padding: 0.35rem 0.85rem;
       font-size: 0.8125rem;
       font-weight: 500;
       border-radius: 6px;
@@ -134,15 +131,23 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
       text-decoration: none;
       font-family: var(--font-github);
     }
 
     .btn:hover {
       background: var(--color-btn-hover-bg);
-      border-color: var(--color-accent-violet);
-      box-shadow: 0 0 10px rgba(199, 85, 247, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--color-btn-primary-bg);
+      border-color: var(--color-btn-primary-border);
+      color: var(--color-btn-primary-text);
+    }
+
+    .btn-primary:hover {
+      background: var(--color-btn-primary-hover);
     }
 
     main {
@@ -155,15 +160,14 @@
 
     .preview-card {
       border: 1px solid var(--color-border-default);
-      border-radius: 8px;
+      border-radius: 6px;
       overflow: hidden;
       background: var(--color-canvas-subtle);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
 
     .card-header {
       background: var(--color-canvas-subtle);
-      padding: 0.7rem 1.1rem;
+      padding: 0.65rem 1rem;
       border-bottom: 1px solid var(--color-border-default);
       display: flex;
       align-items: center;
@@ -181,43 +185,36 @@
 
     .theme-tag {
       font-size: 0.75rem;
-      padding: 0.15rem 0.55rem;
+      padding: 0.15rem 0.5rem;
       border-radius: 4px;
       font-weight: 500;
     }
 
-    .theme-tag.violet {
+    .theme-tag.dark {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      color: #8b949e;
+    }
+
+    .theme-tag.light {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      color: #656d76;
+    }
+
+    .theme-tag.crt {
       background: var(--tag-crt-bg);
       border: 1px solid var(--tag-crt-border);
       color: var(--tag-crt-color);
     }
 
-    .theme-tag.dark {
-      background: rgba(18, 15, 28, 0.8);
-      border: 1px solid var(--color-border-default);
-      color: var(--color-fg-muted);
-    }
-
-    /* CRTWarp Stage with Zero-Border Melt Vignette */
+    /* CRTWarp Stage with SplitFlapText */
     .crt-warp-wrapper {
       position: relative;
       width: 100%;
       height: var(--stage-height);
       background: var(--color-canvas-default);
       overflow: hidden;
-      mask-image: radial-gradient(ellipse 96% 90% at 50% 50%, black 52%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 96% 90% at 50% 50%, black 52%, transparent 100%);
-    }
-
-    .crt-warp-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(ellipse 96% 90% at 50% 50%, transparent 50%, var(--color-canvas-default) 100%),
-                  linear-gradient(to right, var(--color-canvas-default) 0%, transparent 8%, transparent 92%, var(--color-canvas-default) 100%),
-                  linear-gradient(to bottom, var(--color-canvas-default) 0%, transparent 10%, transparent 90%, var(--color-canvas-default) 100%);
-      z-index: 5;
     }
 
     .crt-overlay {
@@ -233,22 +230,21 @@
 
     .crt-overlay .split-flap-text {
       pointer-events: auto;
-      filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(199, 85, 247, 0.35));
+      filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
     }
 
-    /* Standard Readme Stage */
+    /* Standard GitHub Readme Stage */
     .readme-stage {
       height: var(--stage-height);
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #08060e;
-      transition: background-color 0.25s ease;
+      transition: background-color 0.2s ease;
     }
 
     .readme-stage.dark-mode {
-      background-color: #08060e;
+      background-color: #0d1117;
       color-scheme: dark;
     }
 
@@ -280,13 +276,13 @@
 
     .sub-card {
       border: 1px solid var(--color-border-default);
-      border-radius: 8px;
+      border-radius: 6px;
       overflow: hidden;
       background: var(--color-canvas-subtle);
     }
 
     .sub-stage {
-      height: 160px;
+      height: 170px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -294,7 +290,7 @@
     }
 
     .sub-stage.dark {
-      background: #08060e;
+      background: #0d1117;
       color-scheme: dark;
     }
 
@@ -307,7 +303,7 @@
       padding: 1rem 1.25rem;
       background: var(--color-canvas-subtle);
       border: 1px solid var(--color-border-default);
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 0.8125rem;
       color: var(--color-fg-muted);
       display: flex;
@@ -324,9 +320,8 @@
 
     code {
       font-family: var(--font-mono);
-      background: rgba(199, 85, 247, 0.12);
-      border: 1px solid rgba(199, 85, 247, 0.2);
-      padding: 0.15rem 0.4rem;
+      background: rgba(110, 118, 129, 0.15);
+      padding: 0.15rem 0.35rem;
       border-radius: 4px;
       font-size: 0.75rem;
       color: var(--color-fg-default);
@@ -354,10 +349,18 @@
       <div class="title-area">
         <h1>
           <span>🧭</span> 7-Bala / README.md
-          <span class="badge">&lt;SplitFlapText /&gt; Cosmic Violet</span>
+          <span class="badge">&lt;SplitFlapText /&gt; React Bits</span>
         </h1>
       </div>
       <div class="controls">
+        <button id="toggleWordsBtn" class="btn" title="Toggle words between CURIOUS ➔ EXPLORE and think2thrive ➔ explore">
+          <span>🔄</span>
+          <span id="wordsText">Words: CURIOUS ➔ EXPLORE</span>
+        </button>
+        <button id="toggleCrtColorBtn" class="btn" title="Toggle CRTWarp color between GitHub Electric Blue and Cosmic Violet">
+          <span>🎨</span>
+          <span id="crtColorText">Color: Electric Blue</span>
+        </button>
         <button id="toggleThemeBtn" class="btn" title="Toggle between Dark and Light mode">
           <span id="themeIcon">☀️</span>
           <span id="themeText">Switch to Light Mode</span>
@@ -367,13 +370,13 @@
   </header>
 
   <main>
-    <!-- CRTWarp with SplitFlapText (think2thrive -> explore) with Zero Blue -->
+    <!-- CRTWarp with SplitFlapText (CURIOUS -> EXPLORE) -->
     <div class="preview-card">
       <div class="card-header">
-        <span>&lt;CRTWarp /&gt; + &lt;SplitFlapText /&gt; (think2thrive ➔ explore)</span>
+        <span>&lt;CRTWarp /&gt; + &lt;SplitFlapText /&gt; (CURIOUS ➔ EXPLORE)</span>
         <div class="theme-tags">
-          <span class="theme-tag violet">Cosmic Violet #c755f7</span>
-          <span class="theme-tag dark">12 ➔ 7 Dynamic Collapse</span>
+          <span id="crtColorTag" class="theme-tag crt">#58a6ff (GitHub Accent)</span>
+          <span class="theme-tag dark">bg="#0d1117"</span>
         </div>
       </div>
       <!-- Root container mounted by React with CRTWarp + SplitFlapText -->
@@ -383,8 +386,8 @@
     <!-- Standalone SplitFlapText Mechanical Departure Board Card -->
     <div class="preview-card">
       <div class="card-header">
-        <span>Mechanical Flap Board &lt;SplitFlapText /&gt; (Empty Boxes Removed Automatically)</span>
-        <span id="currentModeLabel" class="theme-tag dark">Dark Canvas (#08060e)</span>
+        <span>Mechanical Flap Board &lt;SplitFlapText /&gt; (Height: 240px)</span>
+        <span id="currentModeLabel" class="theme-tag dark">Dark Theme (#0d1117)</span>
       </div>
       <div id="mainStage" class="readme-stage dark-mode">
         <div class="stage-wrapper" id="standalone-splitflap-root"></div>
@@ -395,8 +398,8 @@
     <div class="dual-preview">
       <div class="sub-card">
         <div class="card-header">
-          <span>Dark Canvas (#08060e)</span>
-          <span class="theme-tag dark">Cosmic Dark</span>
+          <span>Dark Canvas (#0d1117)</span>
+          <span class="theme-tag dark">GitHub Dark</span>
         </div>
         <div class="sub-stage dark" id="sub-stage-dark"></div>
       </div>
@@ -404,7 +407,7 @@
       <div class="sub-card">
         <div class="card-header">
           <span>Light Canvas (#ffffff)</span>
-          <span class="theme-tag violet">Boutique Light</span>
+          <span class="theme-tag light">GitHub Light</span>
         </div>
         <div class="sub-stage light" id="sub-stage-light"></div>
       </div>
@@ -412,24 +415,37 @@
 
     <div class="info-footer">
       <div class="info-row">
-        <span><strong>Sequence:</strong> <code>think2thrive</code> (12 tiles) ➔ <code>explore</code> (7 tiles, empty boxes removed)</span>
-        <span><strong>Theme:</strong> Pure Cosmic Violet (<code>#c755f7</code> / <code>#a855f7</code>), Blue discarded</span>
+        <span><strong>Component:</strong> <code>&lt;SplitFlapText /&gt;</code> (React Bits JS + CSS variant)</span>
+        <span><strong>Words:</strong> <code>['CURIOUS', 'EXPLORE']</code> (Curious first, then Explore)</span>
       </div>
       <div class="info-row">
-        <span><strong>Dynamics:</strong> Squeeze & Pop Slot collapse (<code>width: 0</code> + <code>scale: 0</code>), Mechanical latch rebound</span>
-        <span><strong>Background:</strong> <code>&lt;CRTWarp /&gt;</code> Three.js WebGL plasma (Height: <code>240px</code>)</span>
+        <span><strong>Configuration:</strong> <code>flipDuration={0.12}</code>, <code>stagger={0.06}</code>, <code>cycleDelay={2400}</code>, <code>padTo={7}</code></span>
+        <span><strong>Background:</strong> <code>&lt;CRTWarp /&gt;</code> interactive WebGL plasma (Height: <code>240px</code>)</span>
       </div>
     </div>
   </main>
 
   <!-- React mounting script -->
   <script type="module">
-    import React from 'react';
+    import React, { useState } from 'react';
     import { createRoot } from 'react-dom/client';
     import CRTWarp from './CRTWarp.js';
     import SplitFlapText from './SplitFlapText.js';
 
-    function App() {
+    let setCrtColorGlobal = null;
+    let setWordsGlobal = null;
+
+    function CRTWarpWithSplitFlap() {
+      const [plasmaColor, setPlasmaColor] = useState('#58a6ff');
+      const [wordState, setWordState] = useState({
+        words: ['CURIOUS', 'EXPLORE'],
+        padTo: 7,
+        fontSize: 48
+      });
+
+      setCrtColorGlobal = setPlasmaColor;
+      setWordsGlobal = setWordState;
+
       return React.createElement(
         'div',
         {
@@ -441,19 +457,19 @@
           }
         },
         React.createElement(CRTWarp, {
-          color: '#c755f7',
-          backgroundColor: '#08060e',
+          color: plasmaColor,
+          backgroundColor: '#0d1117',
           speed: 0.5,
-          curvature: 0.22,
-          scanlineStrength: 0.22,
+          curvature: 0.25,
+          scanlineStrength: 0.25,
           scanlineFrequency: 200,
           waveAmplitude: 0.3,
           waveFrequency: 2.5,
           bloom: 1.5,
           bloomRadius: 1,
           noise: 0.08,
-          vignette: 1.2,
-          brightness: 1.25,
+          vignette: 0,
+          brightness: 1.2,
           pixelation: 1,
           rgbShift: 0.015,
           mouseReact: true,
@@ -465,18 +481,19 @@
           'div',
           { className: 'crt-overlay' },
           React.createElement(SplitFlapText, {
-            words: ['think2thrive', 'explore'],
-            flipDuration: 0.10,
-            stagger: 0.04,
-            cycleDelay: 2600,
+            words: wordState.words,
+            flipDuration: 0.12,
+            stagger: 0.06,
+            cycleDelay: 2400,
             charset: 'alphanumeric',
-            flipsPerChar: 6,
-            tileColor: '#120d1c',
-            textColor: '#f8fafc',
-            tileRadius: 7,
+            flipsPerChar: 8,
+            tileColor: '#161b22',
+            textColor: '#f0f6fc',
+            tileRadius: 8,
             gap: 6,
-            fontSize: 38,
-            loop: true
+            fontSize: wordState.fontSize,
+            loop: true,
+            padTo: wordState.padTo
           })
         )
       );
@@ -484,64 +501,114 @@
 
     // Mount CRTWarp + SplitFlap
     const crtContainer = document.getElementById('crt-warp-root');
-    createRoot(crtContainer).render(React.createElement(App));
+    createRoot(crtContainer).render(React.createElement(CRTWarpWithSplitFlap));
 
-    // Mount Standalone SplitFlap
+    // Mount Standalone SplitFlap in main stage
     const standaloneContainer = document.getElementById('standalone-splitflap-root');
-    createRoot(standaloneContainer).render(
-      React.createElement(SplitFlapText, {
-        words: ['think2thrive', 'explore'],
-        flipDuration: 0.10,
-        stagger: 0.04,
-        cycleDelay: 2600,
-        charset: 'alphanumeric',
-        flipsPerChar: 6,
-        tileColor: '#120d1c',
-        textColor: '#e879f9',
-        tileRadius: 7,
-        gap: 6,
-        fontSize: 38,
-        loop: true
-      })
-    );
+    const standaloneRoot = createRoot(standaloneContainer);
+    function renderStandalone(words, padTo, fontSize) {
+      standaloneRoot.render(
+        React.createElement(SplitFlapText, {
+          words: words,
+          flipDuration: 0.12,
+          stagger: 0.06,
+          cycleDelay: 2400,
+          charset: 'alphanumeric',
+          flipsPerChar: 8,
+          tileColor: '#161b22',
+          textColor: '#58a6ff',
+          tileRadius: 8,
+          gap: 6,
+          fontSize: fontSize,
+          loop: true,
+          padTo: padTo
+        })
+      );
+    }
+    renderStandalone(['CURIOUS', 'EXPLORE'], 7, 48);
 
     // Mount Dark sub-stage
     const darkSubContainer = document.getElementById('sub-stage-dark');
-    createRoot(darkSubContainer).render(
-      React.createElement(SplitFlapText, {
-        words: ['think2thrive', 'explore'],
-        flipDuration: 0.10,
-        stagger: 0.04,
-        cycleDelay: 2600,
-        charset: 'alphanumeric',
-        flipsPerChar: 6,
-        tileColor: '#161122',
-        textColor: '#f5f3fa',
-        tileRadius: 6,
-        gap: 5,
-        fontSize: 26,
-        loop: true
-      })
-    );
+    const darkSubRoot = createRoot(darkSubContainer);
+    function renderDark(words, padTo, fontSize) {
+      darkSubRoot.render(
+        React.createElement(SplitFlapText, {
+          words: words,
+          flipDuration: 0.12,
+          stagger: 0.06,
+          cycleDelay: 2400,
+          charset: 'alphanumeric',
+          flipsPerChar: 8,
+          tileColor: '#161b22',
+          textColor: '#f0f6fc',
+          tileRadius: 6,
+          gap: 5,
+          fontSize: fontSize,
+          loop: true,
+          padTo: padTo
+        })
+      );
+    }
+    renderDark(['CURIOUS', 'EXPLORE'], 7, 34);
 
     // Mount Light sub-stage
     const lightSubContainer = document.getElementById('sub-stage-light');
-    createRoot(lightSubContainer).render(
-      React.createElement(SplitFlapText, {
-        words: ['think2thrive', 'explore'],
-        flipDuration: 0.10,
-        stagger: 0.04,
-        cycleDelay: 2600,
-        charset: 'alphanumeric',
-        flipsPerChar: 6,
-        tileColor: '#251b38',
-        textColor: '#fbf9fe',
-        tileRadius: 6,
-        gap: 5,
-        fontSize: 26,
-        loop: true
-      })
-    );
+    const lightSubRoot = createRoot(lightSubContainer);
+    function renderLight(words, padTo, fontSize) {
+      lightSubRoot.render(
+        React.createElement(SplitFlapText, {
+          words: words,
+          flipDuration: 0.12,
+          stagger: 0.06,
+          cycleDelay: 2400,
+          charset: 'alphanumeric',
+          flipsPerChar: 8,
+          tileColor: '#24292f',
+          textColor: '#f6f8fa',
+          tileRadius: 6,
+          gap: 5,
+          fontSize: fontSize,
+          loop: true,
+          padTo: padTo
+        })
+      );
+    }
+    renderLight(['CURIOUS', 'EXPLORE'], 7, 34);
+
+    // Words toggle listener
+    const toggleWordsBtn = document.getElementById('toggleWordsBtn');
+    const wordsText = document.getElementById('wordsText');
+    let isCuriousMode = true;
+
+    toggleWordsBtn.addEventListener('click', () => {
+      isCuriousMode = !isCuriousMode;
+      const newWords = isCuriousMode ? ['CURIOUS', 'EXPLORE'] : ['think2thrive', 'explore'];
+      const padLen = isCuriousMode ? 7 : 12;
+      const fSize = isCuriousMode ? 48 : 38;
+      const subSize = isCuriousMode ? 34 : 26;
+
+      wordsText.textContent = isCuriousMode ? 'Words: CURIOUS ➔ EXPLORE' : 'Words: think2thrive ➔ explore';
+      if (setWordsGlobal) {
+        setWordsGlobal({ words: newWords, padTo: padLen, fontSize: fSize });
+      }
+      renderStandalone(newWords, padLen, fSize);
+      renderDark(newWords, padLen, subSize);
+      renderLight(newWords, padLen, subSize);
+    });
+
+    // Color toggle button listener
+    const toggleCrtColorBtn = document.getElementById('toggleCrtColorBtn');
+    const crtColorText = document.getElementById('crtColorText');
+    const crtColorTag = document.getElementById('crtColorTag');
+    let isBlue = true;
+
+    toggleCrtColorBtn.addEventListener('click', () => {
+      isBlue = !isBlue;
+      const newColor = isBlue ? '#58a6ff' : '#c755f7';
+      if (setCrtColorGlobal) setCrtColorGlobal(newColor);
+      crtColorText.textContent = isBlue ? 'Color: Electric Blue' : 'Color: Cosmic Violet';
+      crtColorTag.textContent = isBlue ? '#58a6ff (GitHub Accent)' : '#c755f7 (Cosmic Violet)';
+    });
 
     // Theme toggle
     const toggleThemeBtn = document.getElementById('toggleThemeBtn');
@@ -557,14 +624,16 @@
         document.documentElement.removeAttribute('data-theme');
         mainStage.classList.remove('light-mode');
         mainStage.classList.add('dark-mode');
-        currentModeLabel.textContent = 'Dark Canvas (#08060e)';
+        currentModeLabel.textContent = 'Dark Theme (#0d1117)';
+        currentModeLabel.className = 'theme-tag dark';
         themeIcon.textContent = '☀️';
         themeText.textContent = 'Switch to Light Mode';
       } else {
         document.documentElement.setAttribute('data-theme', 'light');
         mainStage.classList.remove('dark-mode');
         mainStage.classList.add('light-mode');
-        currentModeLabel.textContent = 'Light Canvas (#ffffff)';
+        currentModeLabel.textContent = 'Light Theme (#ffffff)';
+        currentModeLabel.className = 'theme-tag light';
         themeIcon.textContent = '🌙';
         themeText.textContent = 'Switch to Dark Mode';
       }
