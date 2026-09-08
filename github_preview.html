@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="dark" data-dark-theme="dark" data-light-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7-Bala/7-Bala — README.md · GitHub</title>
+  <link rel="icon" href="https://github.githubassets.com/favicons/favicon.png" />
+  <link rel="stylesheet" href="./CRTWarp.css" />
+  <link rel="stylesheet" href="./SplitFlapText.css" />
+
+  <style>
+    /* ─── GitHub Design Tokens (Dark) ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-canvas-default: #0d1117;
+      --color-canvas-subtle: #161b22;
+      --color-canvas-inset: #010409;
+      --color-border-default: #30363d;
+      --color-border-muted: #21262d;
+      --color-fg-default: #e6edf3;
+      --color-fg-muted: #8b949e;
+      --color-fg-subtle: #6e7681;
+      --color-fg-onemphasis: #ffffff;
+      --color-accent-fg: #58a6ff;
+      --color-accent-emphasis: #1f6feb;
+      --color-success-fg: #3fb950;
+      --color-attention-fg: #d29922;
+      --color-danger-fg: #f85149;
+      --color-done-fg: #a371f7;
+      --color-neutral-muted: rgba(110,118,129,0.4);
+      --color-header-bg: #161b22;
+      --color-header-divider: #21262d;
+      --color-header-logo: #f0f6fc;
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --font-size-base: 14px;
+      --border-radius: 6px;
+    }
+
+    html { background: var(--color-canvas-default); color: var(--color-fg-default); font-family: var(--font-sans); font-size: var(--font-size-base); line-height: 1.5; }
+    body { min-height: 100vh; background: var(--color-canvas-default); }
+    a { color: var(--color-accent-fg); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ─── GitHub Top Nav ─── */
+    .gh-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--color-header-bg);
+      border-bottom: 1px solid var(--color-header-divider);
+      height: 62px;
+      display: flex; align-items: center; padding: 0 16px; gap: 16px;
+    }
+    .gh-header-logo {
+      display: flex; align-items: center; gap: 8px; color: var(--color-header-logo);
+    }
+    .gh-header-logo svg { fill: currentColor; }
+    .gh-header-search {
+      flex: 1; max-width: 272px;
+      background: var(--color-canvas-inset);
+      border: 1px solid var(--color-border-default);
+      border-radius: 6px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 12px;
+      font-size: 14px; color: var(--color-fg-muted);
+      cursor: text;
+    }
+    .gh-header-nav {
+      display: flex; align-items: center; gap: 4px;
+      margin-left: auto;
+    }
+    .gh-header-nav a {
+      color: var(--color-fg-default); font-size: 14px; font-weight: 600;
+      padding: 4px 8px; border-radius: 6px;
+    }
+    .gh-header-nav a:hover { background: rgba(177,186,196,.12); text-decoration: none; }
+    .gh-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #c755f7, #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+
+    /* ─── Repo Sub-nav ─── */
+    .gh-subnav {
+      background: var(--color-canvas-default);
+      border-bottom: 1px solid var(--color-border-muted);
+      display: flex; align-items: center; gap: 0;
+      padding: 0 16px; overflow-x: auto;
+    }
+    .gh-subnav-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 12px 16px;
+      font-size: 14px; color: var(--color-fg-muted);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap; cursor: pointer;
+      transition: color .15s;
+    }
+    .gh-subnav-item:hover { color: var(--color-fg-default); }
+    .gh-subnav-item.active {
+      color: var(--color-fg-default); font-weight: 600;
+      border-color: #f78166;
+    }
+    .gh-subnav-item svg { fill: var(--color-fg-muted); }
+    .gh-subnav-count {
+      font-size: 12px; background: var(--color-neutral-muted);
+      border-radius: 20px; padding: 1px 6px;
+      color: var(--color-fg-muted);
+    }
+
+    /* ─── Main layout ─── */
+    .gh-layout {
+      max-width: 1280px; margin: 0 auto;
+      padding: 24px 16px;
+      display: flex; gap: 24px;
+    }
+    .gh-main { flex: 1; min-width: 0; }
+    .gh-sidebar { width: 296px; flex-shrink: 0; }
+    @media (max-width: 1012px) { .gh-sidebar { display: none; } }
+
+    /* ─── Repo header ─── */
+    .gh-repo-header {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      padding: 16px 0 8px;
+    }
+    .gh-repo-icon { color: var(--color-fg-muted); }
+    .gh-repo-icon svg { fill: currentColor; vertical-align: middle; }
+    .gh-repo-owner { font-size: 20px; font-weight: 400; color: var(--color-accent-fg); }
+    .gh-repo-slash { font-size: 20px; font-weight: 300; color: var(--color-fg-muted); margin: 0 4px; }
+    .gh-repo-name { font-size: 20px; font-weight: 700; color: var(--color-accent-fg); }
+    .gh-repo-badge {
+      font-size: 12px; font-weight: 500;
+      padding: 2px 10px;
+      border: 1px solid var(--color-border-default);
+      border-radius: 20px; color: var(--color-fg-muted);
+    }
+
+    /* ─── Action buttons row ─── */
+    .gh-action-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 8px 0 16px;
+    }
+    .gh-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 16px;
+      font-size: 14px; font-weight: 500; font-family: var(--font-sans);
+      border-radius: var(--border-radius);
+      cursor: pointer; border: 1px solid;
+      transition: background .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .gh-btn-secondary {
+      background: var(--color-canvas-subtle);
+      border-color: var(--color-border-default);
+      color: var(--color-fg-default);
+    }
+    .gh-btn-secondary:hover { background: #30363d; }
+    .gh-btn-primary {
+      background: #238636; border-color: #2ea043; color: #fff;
+    }
+    .gh-btn-primary:hover { background: #2ea043; }
+    .gh-btn svg { fill: currentColor; }
+    .gh-btn-count {
+      padding: 0 8px; border-left: 1px solid var(--color-border-default);
+      color: var(--color-fg-default); font-weight: 600;
+    }
+    .gh-btn-group { display: flex; }
+    .gh-btn-group .gh-btn:not(:last-child) { border-radius: 6px 0 0 6px; }
+    .gh-btn-group .gh-btn-count { border-radius: 0 6px 6px 0; border-left: 1px solid var(--color-border-default); }
+
+    /* ─── File browser ─── */
+    .gh-file-browser {
+      border: 1px solid var(--color-border-default);
+      border-radius: var(--border-radius);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .gh-file-browser-header {
+      background: var(--color-canvas-subtle);
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--color-border-default);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .gh-commit-avatar {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: linear-gradient(135deg, #c755f7, #7c3aed);
+      flex-shrink: 0;
+    }
+    .gh-commit-msg { font-size: 14px; font-weight: 600; color: var(--color-fg-default); }
+    .gh-commit-hash { font-family: var(--font-mono); font-size: 12px; color: var(--color-accent-fg); }
+    .gh-commit-time { font-size: 12px; color: var(--color-fg-muted); margin-left: auto; }
+    .gh-file-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      border-bottom: 1px solid var(--color-border-muted);
+      font-size: 14px;
+    }
+    .gh-file-row:last-child { border-bottom: none; }
+    .gh-file-row:hover { background: var(--color-canvas-subtle); }
+    .gh-file-icon { color: var(--color-fg-muted); flex-shrink: 0; }
+    .gh-file-icon svg { fill: currentColor; }
+    .gh-file-name { color: var(--color-accent-fg); flex: 1; }
+    .gh-file-commit { color: var(--color-fg-muted); font-size: 13px; }
+    .gh-file-time { color: var(--color-fg-muted); font-size: 12px; margin-left: auto; }
+
+    /* ─── README box ─── */
+    .gh-readme {
+      border: 1px solid var(--color-border-default);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    .gh-readme-header {
+      background: var(--color-canvas-subtle);
+      border-bottom: 1px solid var(--color-border-default);
+      padding: 8px 16px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--color-fg-default);
+    }
+    .gh-readme-header svg { fill: var(--color-fg-muted); }
+    .gh-readme-body {
+      padding: 32px;
+      background: var(--color-canvas-default);
+    }
+
+    /* ─── README content styles (mimics GitHub markdown) ─── */
+    .gh-md { color: var(--color-fg-default); font-size: 16px; line-height: 1.6; }
+    .gh-md h1 { font-size: 2em; font-weight: 600; padding-bottom: .3em; border-bottom: 1px solid var(--color-border-default); margin-bottom: 16px; }
+    .gh-md h2 { font-size: 1.5em; font-weight: 600; padding-bottom: .3em; border-bottom: 1px solid var(--color-border-default); margin: 24px 0 16px; }
+    .gh-md h3 { font-size: 1.25em; font-weight: 600; margin: 24px 0 16px; }
+    .gh-md p { margin-bottom: 16px; }
+    .gh-md code { font-family: var(--font-mono); background: var(--color-neutral-muted); padding: .2em .4em; border-radius: 6px; font-size: 85%; }
+    .gh-md pre { background: var(--color-canvas-subtle); border: 1px solid var(--color-border-default); border-radius: 6px; padding: 16px; overflow-x: auto; margin-bottom: 16px; }
+    .gh-md pre code { background: none; padding: 0; font-size: 14px; }
+    .gh-md blockquote { border-left: 4px solid var(--color-border-default); padding: 0 16px; color: var(--color-fg-muted); margin-bottom: 16px; }
+    .gh-md hr { border: 0; border-top: 1px solid var(--color-border-default); margin: 24px 0; }
+    .gh-md ul, .gh-md ol { padding-left: 2em; margin-bottom: 16px; }
+    .gh-md li { margin: 4px 0; }
+    .gh-md table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    .gh-md th, .gh-md td { border: 1px solid var(--color-border-default); padding: 6px 13px; }
+    .gh-md th { background: var(--color-canvas-subtle); font-weight: 600; }
+    .gh-md tr:nth-child(even) { background: var(--color-canvas-subtle); }
+    .gh-md [align="center"] { text-align: center; }
+    .gh-md a { color: var(--color-accent-fg); }
+
+    /* ─── The live component stage inside README ─── */
+    .live-stage {
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 0 auto 24px;
+      position: relative;
+    }
+    .live-stage .crt-warp-wrapper {
+      position: relative; width: 100%; height: 280px;
+      background: #0d1117; overflow: hidden;
+    }
+    .live-stage .crt-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      pointer-events: none; z-index: 10;
+    }
+    .live-stage .crt-overlay .split-flap-text {
+      pointer-events: auto;
+      filter: drop-shadow(0 4px 24px rgba(0,0,0,0.7));
+    }
+
+    /* ─── Sidebar ─── */
+    .gh-sidebar-section { margin-bottom: 24px; }
+    .gh-sidebar-heading {
+      font-size: 14px; font-weight: 600;
+      color: var(--color-fg-default); margin-bottom: 8px;
+    }
+    .gh-sidebar-p { font-size: 14px; color: var(--color-fg-muted); margin-bottom: 8px; }
+    .gh-topic {
+      display: inline-flex; align-items: center;
+      padding: 4px 10px; margin: 3px;
+      font-size: 12px; font-weight: 500;
+      background: rgba(56,139,253,.15);
+      color: #58a6ff;
+      border-radius: 20px;
+    }
+    .gh-topic:hover { background: rgba(56,139,253,.25); text-decoration: none; }
+    .gh-stat-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: var(--color-fg-muted);
+      margin-bottom: 8px;
+    }
+    .gh-stat-row svg { fill: var(--color-fg-muted); }
+    .gh-stat-row strong { color: var(--color-fg-default); }
+    .gh-lang-bar {
+      height: 8px; border-radius: 6px;
+      background: var(--color-border-default);
+      overflow: hidden; display: flex; margin-bottom: 8px;
+    }
+    .gh-lang-seg { height: 100%; }
+    .gh-lang-list { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }
+    .gh-lang-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .gh-lang-item { display: flex; align-items: center; color: var(--color-fg-default); }
+    .gh-lang-pct { color: var(--color-fg-muted); margin-left: 4px; }
+
+    /* ─── Badges in readme ─── */
+    .gh-badge {
+      display: inline-flex; align-items: center; gap: 0;
+      border-radius: 4px; overflow: hidden;
+      font-size: 12px; font-weight: 600; line-height: 1;
+      margin: 2px;
+    }
+    .gh-badge-label { background: #555; color: #fff; padding: 4px 8px; }
+    .gh-badge-value { padding: 4px 8px; color: #fff; }
+    .gh-badge-violet { background: #7c3aed; }
+    .gh-badge-green { background: #2ea043; }
+    .gh-badge-blue { background: #0078d4; }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19",
+        "react/": "https://esm.sh/react@19/",
+        "react-dom": "https://esm.sh/react-dom@19",
+        "react-dom/client": "https://esm.sh/react-dom@19/client",
+        "three": "https://esm.sh/three@0.180.0",
+        "./CRTWarp": "./CRTWarp.js",
+        "./SplitFlapText": "./SplitFlapText.js"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ─── GitHub Top Navigation ─── -->
+  <header class="gh-header">
+    <a class="gh-header-logo" href="#">
+      <!-- GitHub Octocat SVG -->
+      <svg height="32" width="32" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+    </a>
+    <div class="gh-header-search">
+      <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/>
+      </svg>
+      Search or jump to…
+    </div>
+    <nav class="gh-header-nav">
+      <a href="#">Pull requests</a>
+      <a href="#">Issues</a>
+      <a href="#">Marketplace</a>
+      <a href="#">Explore</a>
+    </nav>
+    <div class="gh-avatar">7B</div>
+  </header>
+
+  <!-- ─── Repo Sub-nav ─── -->
+  <div class="gh-subnav">
+    <div class="gh-subnav-item active">
+      <svg height="16" width="16" viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/></svg>
+      Code
+    </div>
+    <div class="gh-subnav-item">
+      <svg height="16" width="16" viewBox="0 0 16 16"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"/></svg>
+      Issues
+      <span class="gh-subnav-count">0</span>
+    </div>
+    <div class="gh-subnav-item">
+      <svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354Z"/></svg>
+      Pull requests
+      <span class="gh-subnav-count">0</span>
+    </div>
+    <div class="gh-subnav-item">Actions</div>
+    <div class="gh-subnav-item">Security</div>
+    <div class="gh-subnav-item">Insights</div>
+  </div>
+
+  <!-- ─── Main layout ─── -->
+  <div class="gh-layout">
+    <main class="gh-main">
+
+      <!-- Repo header -->
+      <div class="gh-repo-header">
+        <span class="gh-repo-icon">
+          <svg height="16" width="16" viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/></svg>
+        </span>
+        <a class="gh-repo-owner" href="#">7-Bala</a>
+        <span class="gh-repo-slash">/</span>
+        <a class="gh-repo-name" href="#">7-Bala</a>
+        <span class="gh-repo-badge">Public</span>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="gh-action-row">
+        <div class="gh-btn-group">
+          <button class="gh-btn gh-btn-secondary">
+            <svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 0 1 0 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.689 1.679 8.068a.119.119 0 0 1 0-.136ZM8 2c-1.981 0-3.67.992-4.933 2.078C1.797 5.169.88 6.423.43 7.1a1.619 1.619 0 0 0 0 1.798c.45.678 1.367 1.932 2.637 3.024C4.329 13.008 6.019 14 8 14c1.981 0 3.67-.992 4.933-2.078 1.27-1.092 2.187-2.346 2.637-3.024a1.619 1.619 0 0 0 0-1.798c-.45-.678-1.367-1.932-2.637-3.024C11.671 2.992 9.981 2 8 2Zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm-2.25-1a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"/></svg>
+            Watch
+            <span class="gh-btn-count">1</span>
+          </button>
+        </div>
+        <div class="gh-btn-group">
+          <button class="gh-btn gh-btn-secondary">
+            <svg height="16" width="16" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+            Star
+            <span class="gh-btn-count">0</span>
+          </button>
+        </div>
+        <div class="gh-btn-group">
+          <button class="gh-btn gh-btn-secondary">
+            <svg height="16" width="16" viewBox="0 0 16 16"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>
+            Fork
+            <span class="gh-btn-count">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Branch + file browser -->
+      <div class="gh-file-browser">
+        <div class="gh-file-browser-header">
+          <div class="gh-commit-avatar"></div>
+          <span class="gh-commit-msg">fix: eliminate letter scramble glitching — clean 3D isolation</span>
+          <span class="gh-commit-hash">891e687</span>
+          <span class="gh-commit-time">just now</span>
+        </div>
+        <div class="gh-file-row">
+          <span class="gh-file-icon"><svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V2.75C0 1.784.784 1 1.75 1ZM1.5 2.75v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/></svg></span>
+          <span class="gh-file-name">index.html</span>
+          <span class="gh-file-commit">feat: cosmic violet CRT + split-flap playground</span>
+          <span class="gh-file-time">2 hours ago</span>
+        </div>
+        <div class="gh-file-row">
+          <span class="gh-file-icon"><svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V2.75C0 1.784.784 1 1.75 1ZM1.5 2.75v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/></svg></span>
+          <span class="gh-file-name">SplitFlapText.js</span>
+          <span class="gh-file-commit">fix: eliminate letter scramble glitching — clean 3D isolation</span>
+          <span class="gh-file-time">just now</span>
+        </div>
+        <div class="gh-file-row">
+          <span class="gh-file-icon"><svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V2.75C0 1.784.784 1 1.75 1ZM1.5 2.75v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/></svg></span>
+          <span class="gh-file-name">SplitFlapText.css</span>
+          <span class="gh-file-commit">fix: eliminate letter scramble glitching — clean 3D isolation</span>
+          <span class="gh-file-time">just now</span>
+        </div>
+        <div class="gh-file-row">
+          <span class="gh-file-icon"><svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V2.75C0 1.784.784 1 1.75 1ZM1.5 2.75v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/></svg></span>
+          <span class="gh-file-name">CRTWarp.js</span>
+          <span class="gh-file-commit">feat: cosmic violet CRT plasma shader</span>
+          <span class="gh-file-time">2 hours ago</span>
+        </div>
+        <div class="gh-file-row">
+          <span class="gh-file-icon"><svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V2.75C0 1.784.784 1 1.75 1ZM1.5 2.75v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/></svg></span>
+          <span class="gh-file-name">README.md</span>
+          <span class="gh-file-commit">feat: add live interactive component preview</span>
+          <span class="gh-file-time">just now</span>
+        </div>
+      </div>
+
+      <!-- ─── README rendering ─── -->
+      <div class="gh-readme">
+        <div class="gh-readme-header">
+          <svg height="16" width="16" viewBox="0 0 16 16"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.062 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324.004-5.073-.003-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574ZM8.755 4.75l-.004 7.322a3.752 3.752 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25Z"/></svg>
+          README.md
+        </div>
+        <div class="gh-readme-body">
+          <div class="gh-md">
+            <!-- README content -->
+            <div align="center">
+
+              <!-- Badges -->
+              <p>
+                <span class="gh-badge"><span class="gh-badge-label">React</span><span class="gh-badge-value gh-badge-blue">19</span></span>
+                <span class="gh-badge"><span class="gh-badge-label">Three.js</span><span class="gh-badge-value gh-badge-violet">r180</span></span>
+                <span class="gh-badge"><span class="gh-badge-label">animation</span><span class="gh-badge-value gh-badge-violet">split-flap</span></span>
+                <span class="gh-badge"><span class="gh-badge-label">theme</span><span class="gh-badge-value gh-badge-violet">cosmic violet</span></span>
+                <span class="gh-badge"><span class="gh-badge-label">license</span><span class="gh-badge-value gh-badge-green">MIT</span></span>
+              </p>
+
+              <br/>
+
+              <!-- ████  README BANNER (LOSSLESS SVG)  ████ -->
+              <div style="margin: 20px 0;">
+                <img src="./banner.svg" alt="think2thrive" style="width: 100%; max-width: 840px; height: auto; display: block; border-radius: 8px;" />
+              </div>
+
+              <h1>7-Bala</h1>
+              <p><em>A cosmic-violet split-flap departure board with CRT phosphor warping</em></p>
+            </div>
+
+            <hr/>
+
+            <h2>✨ Features</h2>
+            <ul>
+              <li>🎰 <strong>Mechanical split-flap flip</strong> — faithful 3D card-flip animation per tile</li>
+              <li>📺 <strong>CRT phosphor warp</strong> — Three.js WebGL scanlines, bloom, RGB shift, mouse parallax</li>
+              <li>🪗 <strong>Accordion transition</strong> — tiles stretch out / squeeze in with spring physics</li>
+              <li>🎨 <strong>Cosmic Violet palette</strong> — <code>#c755f7</code> plasma on <code>#0d1117</code> GitHub dark</li>
+              <li>♿ <strong>Accessible</strong> — <code>prefers-reduced-motion</code> respected, proper ARIA labels</li>
+              <li>⚡ <strong>Zero build step</strong> — pure ES modules with importmap, no bundler needed</li>
+            </ul>
+
+            <h2>🚀 Usage</h2>
+            <pre><code>&lt;!-- 1. Include the CSS --&gt;
+&lt;link rel="stylesheet" href="SplitFlapText.css" /&gt;
+
+&lt;!-- 2. Import via ES module --&gt;
+&lt;script type="importmap"&gt;
+  { "imports": { "react": "https://esm.sh/react@19", ... } }
+&lt;/script&gt;
+
+&lt;script type="module"&gt;
+  import SplitFlapText from './SplitFlapText.js';
+
+  createRoot(document.getElementById('root')).render(
+    React.createElement(SplitFlapText, {
+      words: ['think2thrive', 'explore'],
+      flipDuration: 0.11,
+      cycleDelay: 2400,
+      tileColor: '#161b22',
+      textColor: '#ffffff',
+      padTo: 12
+    })
+  );
+&lt;/script&gt;</code></pre>
+
+            <h2>⚙️ Props</h2>
+            <table>
+              <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+              <tr><td><code>words</code></td><td>string[]</td><td><code>['think2thrive','explore']</code></td><td>Words to cycle through</td></tr>
+              <tr><td><code>flipDuration</code></td><td>number</td><td><code>0.11</code></td><td>Seconds per flip frame</td></tr>
+              <tr><td><code>stagger</code></td><td>number</td><td><code>0.05</code></td><td>Delay between tile flips (s)</td></tr>
+              <tr><td><code>cycleDelay</code></td><td>number</td><td><code>2400</code></td><td>Ms between word transitions</td></tr>
+              <tr><td><code>flipsPerChar</code></td><td>number</td><td><code>8</code></td><td>Scramble frames before settling</td></tr>
+              <tr><td><code>tileColor</code></td><td>string</td><td><code>#161b22</code></td><td>Background of each tile</td></tr>
+              <tr><td><code>textColor</code></td><td>string</td><td><code>#ffffff</code></td><td>Character color</td></tr>
+              <tr><td><code>padTo</code></td><td>number</td><td><code>12</code></td><td>Total board width in tiles</td></tr>
+              <tr><td><code>loop</code></td><td>boolean</td><td><code>true</code></td><td>Loop through words indefinitely</td></tr>
+            </table>
+
+            <h2>📄 License</h2>
+            <p>MIT © 2024 <a href="#">7-Bala</a></p>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ─── Sidebar ─── -->
+    <aside class="gh-sidebar">
+      <div class="gh-sidebar-section">
+        <div class="gh-sidebar-heading">About</div>
+        <p class="gh-sidebar-p">Cosmic violet split-flap departure board with CRT phosphor warp. React 19 + Three.js, zero build step.</p>
+        <p style="margin-top:8px">
+          <span class="gh-topic">animation</span>
+          <span class="gh-topic">react</span>
+          <span class="gh-topic">three-js</span>
+          <span class="gh-topic">split-flap</span>
+          <span class="gh-topic">crt</span>
+          <span class="gh-topic">webgl</span>
+          <span class="gh-topic">github-readme</span>
+        </p>
+      </div>
+
+      <div class="gh-sidebar-section">
+        <div class="gh-stat-row">
+          <svg height="16" width="16" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>
+          <strong>0</strong> stars
+        </div>
+        <div class="gh-stat-row">
+          <svg height="16" width="16" viewBox="0 0 16 16"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>
+          <strong>0</strong> forks
+        </div>
+        <div class="gh-stat-row">
+          <svg height="16" width="16" viewBox="0 0 16 16"><path d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 0 1 0 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.689 1.679 8.068a.119.119 0 0 1 0-.136ZM8 2c-1.981 0-3.67.992-4.933 2.078C1.797 5.169.88 6.423.43 7.1a1.619 1.619 0 0 0 0 1.798c.45.678 1.367 1.932 2.637 3.024C4.329 13.008 6.019 14 8 14c1.981 0 3.67-.992 4.933-2.078 1.27-1.092 2.187-2.346 2.637-3.024a1.619 1.619 0 0 0 0-1.798c-.45-.678-1.367-1.932-2.637-3.024C11.671 2.992 9.981 2 8 2Zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm-2.25-1a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"/></svg>
+          <strong>1</strong> watching
+        </div>
+      </div>
+
+      <div class="gh-sidebar-section">
+        <div class="gh-sidebar-heading">Languages</div>
+        <div class="gh-lang-bar">
+          <div class="gh-lang-seg" style="width:62%;background:#f1e05a"></div>
+          <div class="gh-lang-seg" style="width:28%;background:#563d7c"></div>
+          <div class="gh-lang-seg" style="width:10%;background:#e34c26"></div>
+        </div>
+        <div class="gh-lang-list">
+          <span class="gh-lang-item"><span class="gh-lang-dot" style="background:#f1e05a"></span>JavaScript<span class="gh-lang-pct">62%</span></span>
+          <span class="gh-lang-item"><span class="gh-lang-dot" style="background:#563d7c"></span>CSS<span class="gh-lang-pct">28%</span></span>
+          <span class="gh-lang-item"><span class="gh-lang-dot" style="background:#e34c26"></span>HTML<span class="gh-lang-pct">10%</span></span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ─── React: mount live CRT + SplitFlap inside the README ─── -->
+  <script type="module">
+    import React from 'react';
+    import { createRoot } from 'react-dom/client';
+    import CRTWarp from './CRTWarp.js';
+    import SplitFlapText from './SplitFlapText.js';
+
+    // Mount CRTWarp canvas behind the split-flap text
+    const crtRoot = document.getElementById('readme-crt-root');
+    if (crtRoot) {
+      createRoot(crtRoot).render(
+        React.createElement(CRTWarp, {
+          color: '#c755f7',
+          backgroundColor: '#0d1117',
+          speed: 0.5,
+          curvature: 0.22,
+          scanlineStrength: 0.22,
+          scanlineFrequency: 200,
+          waveAmplitude: 0.3,
+          waveFrequency: 2.5,
+          bloom: 1.6,
+          bloomRadius: 1.1,
+          noise: 0.08,
+          vignette: 0,
+          brightness: 1.2,
+          pixelation: 1,
+          rgbShift: 0.015,
+          mouseReact: true,
+          mouseStrength: 0.5,
+          dpr: 1,
+          fps: 30
+        })
+      );
+    }
+
+    // Mount SplitFlapText overlay
+    const sfRoot = document.getElementById('readme-splitflap-root');
+    if (sfRoot) {
+      createRoot(sfRoot).render(
+        React.createElement(SplitFlapText, {
+          words: ['think2thrive', 'explore'],
+          flipDuration: 0.11,
+          stagger: 0.05,
+          cycleDelay: 2400,
+          charset: 'alphanumeric',
+          flipsPerChar: 8,
+          tileColor: '#161b22',
+          textColor: '#ffffff',
+          tileRadius: 8,
+          gap: 6,
+          fontSize: 44,
+          loop: true,
+          padTo: 12
+        })
+      );
+    }
+  </script>
+</body>
+</html>

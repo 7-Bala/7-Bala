@@ -1,0 +1,1146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 220" width="840" height="220">
+  <defs>
+    <!-- Background Cosmic Violet Glow -->
+    <radialGradient id="crtGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#c755f7" stop-opacity="0.28" />
+      <stop offset="45%" stop-color="#9333ea" stop-opacity="0.14" />
+      <stop offset="75%" stop-color="#3b0764" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#0d1117" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Tile Gradients -->
+    <linearGradient id="tileTopGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#242b35" />
+      <stop offset="100%" stop-color="#161b22" />
+    </linearGradient>
+    <linearGradient id="tileBottomGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#161b22" />
+      <stop offset="100%" stop-color="#0d1117" />
+    </linearGradient>
+
+    <!-- Tile Clip Paths (Local to 0,0 46x64) -->
+    <clipPath id="tileTopClip">
+      <rect x="0" y="0" width="46" height="32" rx="8" />
+    </clipPath>
+    <clipPath id="tileBottomClip">
+      <rect x="0" y="32" width="46" height="32" rx="8" />
+    </clipPath>
+
+    <!-- CRT Scanlines Pattern -->
+    <pattern id="scanlines" width="100%" height="3" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="840" y2="0" stroke="rgba(0, 0, 0, 0.28)" stroke-width="1.2" />
+    </pattern>
+
+    <!-- Board Violet Drop Shadow -->
+    <filter id="tileShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="14" flood-color="#c755f7" flood-opacity="0.28" />
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <style>
+
+    * { box-sizing: border-box; }
+    .tile-text {
+      font-family: ui-monospace, SFMono-Regular, "Roboto Mono", "Cascadia Code", "Liberation Mono", Menlo, Consolas, monospace;
+      font-size: 38px;
+      font-weight: 760;
+      fill: #ffffff;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+    .crease-dark { stroke: #090d12; stroke-width: 1.5; }
+    .crease-light { stroke: rgba(255, 255, 255, 0.12); stroke-width: 0.8; }
+
+    /* Ambient CRT glow breathing */
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+    .crt-glow {
+      transform-origin: 420px 110px;
+      animation: glowPulse 6s ease-in-out infinite;
+    }
+
+    /* Core slide: shifts +26px during explore to dead-center the 7 letters */
+    @keyframes coreSlide {
+      0%, 35.56% {
+        transform: translateX(0px);
+      }
+      46.67%, 82.22% {
+        transform: translateX(26px);
+      }
+      93.33%, 100% {
+        transform: translateX(0px);
+      }
+    }
+    .core-slide {
+      animation: coreSlide 9s cubic-bezier(0.34, 1.3, 0.64, 1) infinite;
+    }
+  
+      @keyframes flankAnim0 {
+        0%, 35.56% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+        41.11%, 81.67% {
+          transform: translateX(130px) scaleX(0);
+          opacity: 0;
+          visibility: hidden;
+        }
+        88.00% {
+          transform: translateX(-7.8px) scaleX(1.15);
+          opacity: 1;
+          visibility: visible;
+        }
+        91.11%, 100% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      .flank-anim-0 {
+        transform-origin: 46px 32px;
+        animation: flankAnim0 9s cubic-bezier(0.34, 1.45, 0.64, 1) infinite;
+      }
+    
+      @keyframes flankAnim1 {
+        0%, 35.56% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+        42.00%, 81.67% {
+          transform: translateX(78px) scaleX(0);
+          opacity: 0;
+          visibility: hidden;
+        }
+        87.11% {
+          transform: translateX(-4.68px) scaleX(1.15);
+          opacity: 1;
+          visibility: visible;
+        }
+        90.22%, 100% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      .flank-anim-1 {
+        transform-origin: 46px 32px;
+        animation: flankAnim1 9s cubic-bezier(0.34, 1.45, 0.64, 1) infinite;
+      }
+    
+      @keyframes flankAnim9 {
+        0%, 35.56% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+        42.00%, 81.67% {
+          transform: translateX(-26px) scaleX(0);
+          opacity: 0;
+          visibility: hidden;
+        }
+        87.11% {
+          transform: translateX(1.56px) scaleX(1.15);
+          opacity: 1;
+          visibility: visible;
+        }
+        90.22%, 100% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      .flank-anim-9 {
+        transform-origin: 0px 32px;
+        animation: flankAnim9 9s cubic-bezier(0.34, 1.45, 0.64, 1) infinite;
+      }
+    
+      @keyframes flankAnim10 {
+        0%, 35.56% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+        41.56%, 81.67% {
+          transform: translateX(-78px) scaleX(0);
+          opacity: 0;
+          visibility: hidden;
+        }
+        87.56% {
+          transform: translateX(4.68px) scaleX(1.15);
+          opacity: 1;
+          visibility: visible;
+        }
+        90.67%, 100% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      .flank-anim-10 {
+        transform-origin: 0px 32px;
+        animation: flankAnim10 9s cubic-bezier(0.34, 1.45, 0.64, 1) infinite;
+      }
+    
+      @keyframes flankAnim11 {
+        0%, 35.56% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+        41.11%, 81.67% {
+          transform: translateX(-130px) scaleX(0);
+          opacity: 0;
+          visibility: hidden;
+        }
+        88.00% {
+          transform: translateX(7.8px) scaleX(1.15);
+          opacity: 1;
+          visibility: visible;
+        }
+        91.11%, 100% {
+          transform: translateX(0px) scaleX(1);
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      .flank-anim-11 {
+        transform-origin: 0px 32px;
+        animation: flankAnim11 9s cubic-bezier(0.34, 1.45, 0.64, 1) infinite;
+      }
+    
+      @keyframes flapFlip0 {
+        0%, 36.11% { transform: scaleY(1); }
+        37.00% { transform: scaleY(0.12); }
+        37.89% { transform: scaleY(1); }
+        38.78% { transform: scaleY(0.12); }
+        39.67% { transform: scaleY(1); }
+        40.56% { transform: scaleY(0.12); }
+        41.44%, 83.67% { transform: scaleY(1); }
+        84.56% { transform: scaleY(0.12); }
+        85.44% { transform: scaleY(1); }
+        86.33% { transform: scaleY(0.12); }
+        87.22% { transform: scaleY(1); }
+        88.11% { transform: scaleY(0.12); }
+        89.00%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-0 {
+        transform-origin: 23px 32px;
+        animation: flapFlip0 9s ease-in-out infinite;
+      }
+    
+      @keyframes char0_w1 {
+        0%, 37.00% { opacity: 1; }
+        37.11%, 88.11% { opacity: 0; }
+        88.22%, 100% { opacity: 1; }
+      }
+      .c-0-w1 { animation: char0_w1 9s step-end infinite; }
+    
+      @keyframes char0_s1a {
+        0%, 37.00% { opacity: 0; }
+        37.11%, 38.78% { opacity: 1; }
+        38.89%, 100% { opacity: 0; }
+      }
+      .c-0-s1a { animation: char0_s1a 9s step-end infinite; }
+    
+      @keyframes char0_s1b {
+        0%, 38.78% { opacity: 0; }
+        38.89%, 40.56% { opacity: 1; }
+        40.67%, 100% { opacity: 0; }
+      }
+      .c-0-s1b { animation: char0_s1b 9s step-end infinite; }
+    
+      @keyframes char0_s2a {
+        0%, 84.56% { opacity: 0; }
+        84.67%, 86.33% { opacity: 1; }
+        86.44%, 100% { opacity: 0; }
+      }
+      .c-0-s2a { animation: char0_s2a 9s step-end infinite; }
+    
+      @keyframes char0_s2b {
+        0%, 86.33% { opacity: 0; }
+        86.44%, 88.11% { opacity: 1; }
+        88.22%, 100% { opacity: 0; }
+      }
+      .c-0-s2b { animation: char0_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip1 {
+        0%, 36.56% { transform: scaleY(1); }
+        37.44% { transform: scaleY(0.12); }
+        38.33% { transform: scaleY(1); }
+        39.22% { transform: scaleY(0.12); }
+        40.11% { transform: scaleY(1); }
+        41.00% { transform: scaleY(0.12); }
+        41.89%, 82.78% { transform: scaleY(1); }
+        83.67% { transform: scaleY(0.12); }
+        84.56% { transform: scaleY(1); }
+        85.44% { transform: scaleY(0.12); }
+        86.33% { transform: scaleY(1); }
+        87.22% { transform: scaleY(0.12); }
+        88.11%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-1 {
+        transform-origin: 23px 32px;
+        animation: flapFlip1 9s ease-in-out infinite;
+      }
+    
+      @keyframes char1_w1 {
+        0%, 37.44% { opacity: 1; }
+        37.56%, 87.22% { opacity: 0; }
+        87.33%, 100% { opacity: 1; }
+      }
+      .c-1-w1 { animation: char1_w1 9s step-end infinite; }
+    
+      @keyframes char1_s1a {
+        0%, 37.44% { opacity: 0; }
+        37.56%, 39.22% { opacity: 1; }
+        39.33%, 100% { opacity: 0; }
+      }
+      .c-1-s1a { animation: char1_s1a 9s step-end infinite; }
+    
+      @keyframes char1_s1b {
+        0%, 39.22% { opacity: 0; }
+        39.33%, 41.00% { opacity: 1; }
+        41.11%, 100% { opacity: 0; }
+      }
+      .c-1-s1b { animation: char1_s1b 9s step-end infinite; }
+    
+      @keyframes char1_s2a {
+        0%, 83.67% { opacity: 0; }
+        83.78%, 85.44% { opacity: 1; }
+        85.56%, 100% { opacity: 0; }
+      }
+      .c-1-s2a { animation: char1_s2a 9s step-end infinite; }
+    
+      @keyframes char1_s2b {
+        0%, 85.44% { opacity: 0; }
+        85.56%, 87.22% { opacity: 1; }
+        87.33%, 100% { opacity: 0; }
+      }
+      .c-1-s2b { animation: char1_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip2 {
+        0%, 36.11% { transform: scaleY(1); }
+        37.00% { transform: scaleY(0.12); }
+        37.89% { transform: scaleY(1); }
+        38.78% { transform: scaleY(0.12); }
+        39.67% { transform: scaleY(1); }
+        40.56% { transform: scaleY(0.12); }
+        41.44%, 82.78% { transform: scaleY(1); }
+        83.67% { transform: scaleY(0.12); }
+        84.56% { transform: scaleY(1); }
+        85.44% { transform: scaleY(0.12); }
+        86.33% { transform: scaleY(1); }
+        87.22% { transform: scaleY(0.12); }
+        88.11%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-2 {
+        transform-origin: 23px 32px;
+        animation: flapFlip2 9s ease-in-out infinite;
+      }
+    
+      @keyframes char2_w1 {
+        0%, 37.00% { opacity: 1; }
+        37.11%, 87.22% { opacity: 0; }
+        87.33%, 100% { opacity: 1; }
+      }
+      .c-2-w1 { animation: char2_w1 9s step-end infinite; }
+    
+      @keyframes char2_s1a {
+        0%, 37.00% { opacity: 0; }
+        37.11%, 38.78% { opacity: 1; }
+        38.89%, 100% { opacity: 0; }
+      }
+      .c-2-s1a { animation: char2_s1a 9s step-end infinite; }
+    
+      @keyframes char2_s1b {
+        0%, 38.78% { opacity: 0; }
+        38.89%, 40.56% { opacity: 1; }
+        40.67%, 100% { opacity: 0; }
+      }
+      .c-2-s1b { animation: char2_s1b 9s step-end infinite; }
+    
+        @keyframes char2_w2 {
+          0%, 40.56% { opacity: 0; }
+          40.67%, 83.67% { opacity: 1; }
+          83.78%, 100% { opacity: 0; }
+        }
+        .c-2-w2 { animation: char2_w2 9s step-end infinite; }
+      
+      @keyframes char2_s2a {
+        0%, 83.67% { opacity: 0; }
+        83.78%, 85.44% { opacity: 1; }
+        85.56%, 100% { opacity: 0; }
+      }
+      .c-2-s2a { animation: char2_s2a 9s step-end infinite; }
+    
+      @keyframes char2_s2b {
+        0%, 85.44% { opacity: 0; }
+        85.56%, 87.22% { opacity: 1; }
+        87.33%, 100% { opacity: 0; }
+      }
+      .c-2-s2b { animation: char2_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip3 {
+        0%, 36.72% { transform: scaleY(1); }
+        37.61% { transform: scaleY(0.12); }
+        38.50% { transform: scaleY(1); }
+        39.39% { transform: scaleY(0.12); }
+        40.28% { transform: scaleY(1); }
+        41.17% { transform: scaleY(0.12); }
+        42.06%, 83.39% { transform: scaleY(1); }
+        84.28% { transform: scaleY(0.12); }
+        85.17% { transform: scaleY(1); }
+        86.06% { transform: scaleY(0.12); }
+        86.94% { transform: scaleY(1); }
+        87.83% { transform: scaleY(0.12); }
+        88.72%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-3 {
+        transform-origin: 23px 32px;
+        animation: flapFlip3 9s ease-in-out infinite;
+      }
+    
+      @keyframes char3_w1 {
+        0%, 37.61% { opacity: 1; }
+        37.72%, 87.83% { opacity: 0; }
+        87.94%, 100% { opacity: 1; }
+      }
+      .c-3-w1 { animation: char3_w1 9s step-end infinite; }
+    
+      @keyframes char3_s1a {
+        0%, 37.61% { opacity: 0; }
+        37.72%, 39.39% { opacity: 1; }
+        39.50%, 100% { opacity: 0; }
+      }
+      .c-3-s1a { animation: char3_s1a 9s step-end infinite; }
+    
+      @keyframes char3_s1b {
+        0%, 39.39% { opacity: 0; }
+        39.50%, 41.17% { opacity: 1; }
+        41.28%, 100% { opacity: 0; }
+      }
+      .c-3-s1b { animation: char3_s1b 9s step-end infinite; }
+    
+        @keyframes char3_w2 {
+          0%, 41.17% { opacity: 0; }
+          41.28%, 84.28% { opacity: 1; }
+          84.39%, 100% { opacity: 0; }
+        }
+        .c-3-w2 { animation: char3_w2 9s step-end infinite; }
+      
+      @keyframes char3_s2a {
+        0%, 84.28% { opacity: 0; }
+        84.39%, 86.06% { opacity: 1; }
+        86.17%, 100% { opacity: 0; }
+      }
+      .c-3-s2a { animation: char3_s2a 9s step-end infinite; }
+    
+      @keyframes char3_s2b {
+        0%, 86.06% { opacity: 0; }
+        86.17%, 87.83% { opacity: 1; }
+        87.94%, 100% { opacity: 0; }
+      }
+      .c-3-s2b { animation: char3_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip4 {
+        0%, 37.33% { transform: scaleY(1); }
+        38.22% { transform: scaleY(0.12); }
+        39.11% { transform: scaleY(1); }
+        40.00% { transform: scaleY(0.12); }
+        40.89% { transform: scaleY(1); }
+        41.78% { transform: scaleY(0.12); }
+        42.67%, 84.00% { transform: scaleY(1); }
+        84.89% { transform: scaleY(0.12); }
+        85.78% { transform: scaleY(1); }
+        86.67% { transform: scaleY(0.12); }
+        87.56% { transform: scaleY(1); }
+        88.44% { transform: scaleY(0.12); }
+        89.33%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-4 {
+        transform-origin: 23px 32px;
+        animation: flapFlip4 9s ease-in-out infinite;
+      }
+    
+      @keyframes char4_w1 {
+        0%, 38.22% { opacity: 1; }
+        38.33%, 88.44% { opacity: 0; }
+        88.56%, 100% { opacity: 1; }
+      }
+      .c-4-w1 { animation: char4_w1 9s step-end infinite; }
+    
+      @keyframes char4_s1a {
+        0%, 38.22% { opacity: 0; }
+        38.33%, 40.00% { opacity: 1; }
+        40.11%, 100% { opacity: 0; }
+      }
+      .c-4-s1a { animation: char4_s1a 9s step-end infinite; }
+    
+      @keyframes char4_s1b {
+        0%, 40.00% { opacity: 0; }
+        40.11%, 41.78% { opacity: 1; }
+        41.89%, 100% { opacity: 0; }
+      }
+      .c-4-s1b { animation: char4_s1b 9s step-end infinite; }
+    
+        @keyframes char4_w2 {
+          0%, 41.78% { opacity: 0; }
+          41.89%, 84.89% { opacity: 1; }
+          85.00%, 100% { opacity: 0; }
+        }
+        .c-4-w2 { animation: char4_w2 9s step-end infinite; }
+      
+      @keyframes char4_s2a {
+        0%, 84.89% { opacity: 0; }
+        85.00%, 86.67% { opacity: 1; }
+        86.78%, 100% { opacity: 0; }
+      }
+      .c-4-s2a { animation: char4_s2a 9s step-end infinite; }
+    
+      @keyframes char4_s2b {
+        0%, 86.67% { opacity: 0; }
+        86.78%, 88.44% { opacity: 1; }
+        88.56%, 100% { opacity: 0; }
+      }
+      .c-4-s2b { animation: char4_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip5 {
+        0%, 37.94% { transform: scaleY(1); }
+        38.83% { transform: scaleY(0.12); }
+        39.72% { transform: scaleY(1); }
+        40.61% { transform: scaleY(0.12); }
+        41.50% { transform: scaleY(1); }
+        42.39% { transform: scaleY(0.12); }
+        43.28%, 84.61% { transform: scaleY(1); }
+        85.50% { transform: scaleY(0.12); }
+        86.39% { transform: scaleY(1); }
+        87.28% { transform: scaleY(0.12); }
+        88.17% { transform: scaleY(1); }
+        89.06% { transform: scaleY(0.12); }
+        89.94%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-5 {
+        transform-origin: 23px 32px;
+        animation: flapFlip5 9s ease-in-out infinite;
+      }
+    
+      @keyframes char5_w1 {
+        0%, 38.83% { opacity: 1; }
+        38.94%, 89.06% { opacity: 0; }
+        89.17%, 100% { opacity: 1; }
+      }
+      .c-5-w1 { animation: char5_w1 9s step-end infinite; }
+    
+      @keyframes char5_s1a {
+        0%, 38.83% { opacity: 0; }
+        38.94%, 40.61% { opacity: 1; }
+        40.72%, 100% { opacity: 0; }
+      }
+      .c-5-s1a { animation: char5_s1a 9s step-end infinite; }
+    
+      @keyframes char5_s1b {
+        0%, 40.61% { opacity: 0; }
+        40.72%, 42.39% { opacity: 1; }
+        42.50%, 100% { opacity: 0; }
+      }
+      .c-5-s1b { animation: char5_s1b 9s step-end infinite; }
+    
+        @keyframes char5_w2 {
+          0%, 42.39% { opacity: 0; }
+          42.50%, 85.50% { opacity: 1; }
+          85.61%, 100% { opacity: 0; }
+        }
+        .c-5-w2 { animation: char5_w2 9s step-end infinite; }
+      
+      @keyframes char5_s2a {
+        0%, 85.50% { opacity: 0; }
+        85.61%, 87.28% { opacity: 1; }
+        87.39%, 100% { opacity: 0; }
+      }
+      .c-5-s2a { animation: char5_s2a 9s step-end infinite; }
+    
+      @keyframes char5_s2b {
+        0%, 87.28% { opacity: 0; }
+        87.39%, 89.06% { opacity: 1; }
+        89.17%, 100% { opacity: 0; }
+      }
+      .c-5-s2b { animation: char5_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip6 {
+        0%, 38.56% { transform: scaleY(1); }
+        39.44% { transform: scaleY(0.12); }
+        40.33% { transform: scaleY(1); }
+        41.22% { transform: scaleY(0.12); }
+        42.11% { transform: scaleY(1); }
+        43.00% { transform: scaleY(0.12); }
+        43.89%, 85.22% { transform: scaleY(1); }
+        86.11% { transform: scaleY(0.12); }
+        87.00% { transform: scaleY(1); }
+        87.89% { transform: scaleY(0.12); }
+        88.78% { transform: scaleY(1); }
+        89.67% { transform: scaleY(0.12); }
+        90.56%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-6 {
+        transform-origin: 23px 32px;
+        animation: flapFlip6 9s ease-in-out infinite;
+      }
+    
+      @keyframes char6_w1 {
+        0%, 39.44% { opacity: 1; }
+        39.56%, 89.67% { opacity: 0; }
+        89.78%, 100% { opacity: 1; }
+      }
+      .c-6-w1 { animation: char6_w1 9s step-end infinite; }
+    
+      @keyframes char6_s1a {
+        0%, 39.44% { opacity: 0; }
+        39.56%, 41.22% { opacity: 1; }
+        41.33%, 100% { opacity: 0; }
+      }
+      .c-6-s1a { animation: char6_s1a 9s step-end infinite; }
+    
+      @keyframes char6_s1b {
+        0%, 41.22% { opacity: 0; }
+        41.33%, 43.00% { opacity: 1; }
+        43.11%, 100% { opacity: 0; }
+      }
+      .c-6-s1b { animation: char6_s1b 9s step-end infinite; }
+    
+        @keyframes char6_w2 {
+          0%, 43.00% { opacity: 0; }
+          43.11%, 86.11% { opacity: 1; }
+          86.22%, 100% { opacity: 0; }
+        }
+        .c-6-w2 { animation: char6_w2 9s step-end infinite; }
+      
+      @keyframes char6_s2a {
+        0%, 86.11% { opacity: 0; }
+        86.22%, 87.89% { opacity: 1; }
+        88.00%, 100% { opacity: 0; }
+      }
+      .c-6-s2a { animation: char6_s2a 9s step-end infinite; }
+    
+      @keyframes char6_s2b {
+        0%, 87.89% { opacity: 0; }
+        88.00%, 89.67% { opacity: 1; }
+        89.78%, 100% { opacity: 0; }
+      }
+      .c-6-s2b { animation: char6_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip7 {
+        0%, 39.17% { transform: scaleY(1); }
+        40.06% { transform: scaleY(0.12); }
+        40.94% { transform: scaleY(1); }
+        41.83% { transform: scaleY(0.12); }
+        42.72% { transform: scaleY(1); }
+        43.61% { transform: scaleY(0.12); }
+        44.50%, 85.83% { transform: scaleY(1); }
+        86.72% { transform: scaleY(0.12); }
+        87.61% { transform: scaleY(1); }
+        88.50% { transform: scaleY(0.12); }
+        89.39% { transform: scaleY(1); }
+        90.28% { transform: scaleY(0.12); }
+        91.17%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-7 {
+        transform-origin: 23px 32px;
+        animation: flapFlip7 9s ease-in-out infinite;
+      }
+    
+      @keyframes char7_w1 {
+        0%, 40.06% { opacity: 1; }
+        40.17%, 90.28% { opacity: 0; }
+        90.39%, 100% { opacity: 1; }
+      }
+      .c-7-w1 { animation: char7_w1 9s step-end infinite; }
+    
+      @keyframes char7_s1a {
+        0%, 40.06% { opacity: 0; }
+        40.17%, 41.83% { opacity: 1; }
+        41.94%, 100% { opacity: 0; }
+      }
+      .c-7-s1a { animation: char7_s1a 9s step-end infinite; }
+    
+      @keyframes char7_s1b {
+        0%, 41.83% { opacity: 0; }
+        41.94%, 43.61% { opacity: 1; }
+        43.72%, 100% { opacity: 0; }
+      }
+      .c-7-s1b { animation: char7_s1b 9s step-end infinite; }
+    
+        @keyframes char7_w2 {
+          0%, 43.61% { opacity: 0; }
+          43.72%, 86.72% { opacity: 1; }
+          86.83%, 100% { opacity: 0; }
+        }
+        .c-7-w2 { animation: char7_w2 9s step-end infinite; }
+      
+      @keyframes char7_s2a {
+        0%, 86.72% { opacity: 0; }
+        86.83%, 88.50% { opacity: 1; }
+        88.61%, 100% { opacity: 0; }
+      }
+      .c-7-s2a { animation: char7_s2a 9s step-end infinite; }
+    
+      @keyframes char7_s2b {
+        0%, 88.50% { opacity: 0; }
+        88.61%, 90.28% { opacity: 1; }
+        90.39%, 100% { opacity: 0; }
+      }
+      .c-7-s2b { animation: char7_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip8 {
+        0%, 39.78% { transform: scaleY(1); }
+        40.67% { transform: scaleY(0.12); }
+        41.56% { transform: scaleY(1); }
+        42.44% { transform: scaleY(0.12); }
+        43.33% { transform: scaleY(1); }
+        44.22% { transform: scaleY(0.12); }
+        45.11%, 86.44% { transform: scaleY(1); }
+        87.33% { transform: scaleY(0.12); }
+        88.22% { transform: scaleY(1); }
+        89.11% { transform: scaleY(0.12); }
+        90.00% { transform: scaleY(1); }
+        90.89% { transform: scaleY(0.12); }
+        91.78%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-8 {
+        transform-origin: 23px 32px;
+        animation: flapFlip8 9s ease-in-out infinite;
+      }
+    
+      @keyframes char8_w1 {
+        0%, 40.67% { opacity: 1; }
+        40.78%, 90.89% { opacity: 0; }
+        91.00%, 100% { opacity: 1; }
+      }
+      .c-8-w1 { animation: char8_w1 9s step-end infinite; }
+    
+      @keyframes char8_s1a {
+        0%, 40.67% { opacity: 0; }
+        40.78%, 42.44% { opacity: 1; }
+        42.56%, 100% { opacity: 0; }
+      }
+      .c-8-s1a { animation: char8_s1a 9s step-end infinite; }
+    
+      @keyframes char8_s1b {
+        0%, 42.44% { opacity: 0; }
+        42.56%, 44.22% { opacity: 1; }
+        44.33%, 100% { opacity: 0; }
+      }
+      .c-8-s1b { animation: char8_s1b 9s step-end infinite; }
+    
+        @keyframes char8_w2 {
+          0%, 44.22% { opacity: 0; }
+          44.33%, 87.33% { opacity: 1; }
+          87.44%, 100% { opacity: 0; }
+        }
+        .c-8-w2 { animation: char8_w2 9s step-end infinite; }
+      
+      @keyframes char8_s2a {
+        0%, 87.33% { opacity: 0; }
+        87.44%, 89.11% { opacity: 1; }
+        89.22%, 100% { opacity: 0; }
+      }
+      .c-8-s2a { animation: char8_s2a 9s step-end infinite; }
+    
+      @keyframes char8_s2b {
+        0%, 89.11% { opacity: 0; }
+        89.22%, 90.89% { opacity: 1; }
+        91.00%, 100% { opacity: 0; }
+      }
+      .c-8-s2b { animation: char8_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip9 {
+        0%, 36.11% { transform: scaleY(1); }
+        37.00% { transform: scaleY(0.12); }
+        37.89% { transform: scaleY(1); }
+        38.78% { transform: scaleY(0.12); }
+        39.67% { transform: scaleY(1); }
+        40.56% { transform: scaleY(0.12); }
+        41.44%, 83.44% { transform: scaleY(1); }
+        84.33% { transform: scaleY(0.12); }
+        85.22% { transform: scaleY(1); }
+        86.11% { transform: scaleY(0.12); }
+        87.00% { transform: scaleY(1); }
+        87.89% { transform: scaleY(0.12); }
+        88.78%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-9 {
+        transform-origin: 23px 32px;
+        animation: flapFlip9 9s ease-in-out infinite;
+      }
+    
+      @keyframes char9_w1 {
+        0%, 37.00% { opacity: 1; }
+        37.11%, 87.89% { opacity: 0; }
+        88.00%, 100% { opacity: 1; }
+      }
+      .c-9-w1 { animation: char9_w1 9s step-end infinite; }
+    
+      @keyframes char9_s1a {
+        0%, 37.00% { opacity: 0; }
+        37.11%, 38.78% { opacity: 1; }
+        38.89%, 100% { opacity: 0; }
+      }
+      .c-9-s1a { animation: char9_s1a 9s step-end infinite; }
+    
+      @keyframes char9_s1b {
+        0%, 38.78% { opacity: 0; }
+        38.89%, 40.56% { opacity: 1; }
+        40.67%, 100% { opacity: 0; }
+      }
+      .c-9-s1b { animation: char9_s1b 9s step-end infinite; }
+    
+      @keyframes char9_s2a {
+        0%, 84.33% { opacity: 0; }
+        84.44%, 86.11% { opacity: 1; }
+        86.22%, 100% { opacity: 0; }
+      }
+      .c-9-s2a { animation: char9_s2a 9s step-end infinite; }
+    
+      @keyframes char9_s2b {
+        0%, 86.11% { opacity: 0; }
+        86.22%, 87.89% { opacity: 1; }
+        88.00%, 100% { opacity: 0; }
+      }
+      .c-9-s2b { animation: char9_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip10 {
+        0%, 36.56% { transform: scaleY(1); }
+        37.44% { transform: scaleY(0.12); }
+        38.33% { transform: scaleY(1); }
+        39.22% { transform: scaleY(0.12); }
+        40.11% { transform: scaleY(1); }
+        41.00% { transform: scaleY(0.12); }
+        41.89%, 84.11% { transform: scaleY(1); }
+        85.00% { transform: scaleY(0.12); }
+        85.89% { transform: scaleY(1); }
+        86.78% { transform: scaleY(0.12); }
+        87.67% { transform: scaleY(1); }
+        88.56% { transform: scaleY(0.12); }
+        89.44%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-10 {
+        transform-origin: 23px 32px;
+        animation: flapFlip10 9s ease-in-out infinite;
+      }
+    
+      @keyframes char10_w1 {
+        0%, 37.44% { opacity: 1; }
+        37.56%, 88.56% { opacity: 0; }
+        88.67%, 100% { opacity: 1; }
+      }
+      .c-10-w1 { animation: char10_w1 9s step-end infinite; }
+    
+      @keyframes char10_s1a {
+        0%, 37.44% { opacity: 0; }
+        37.56%, 39.22% { opacity: 1; }
+        39.33%, 100% { opacity: 0; }
+      }
+      .c-10-s1a { animation: char10_s1a 9s step-end infinite; }
+    
+      @keyframes char10_s1b {
+        0%, 39.22% { opacity: 0; }
+        39.33%, 41.00% { opacity: 1; }
+        41.11%, 100% { opacity: 0; }
+      }
+      .c-10-s1b { animation: char10_s1b 9s step-end infinite; }
+    
+      @keyframes char10_s2a {
+        0%, 85.00% { opacity: 0; }
+        85.11%, 86.78% { opacity: 1; }
+        86.89%, 100% { opacity: 0; }
+      }
+      .c-10-s2a { animation: char10_s2a 9s step-end infinite; }
+    
+      @keyframes char10_s2b {
+        0%, 86.78% { opacity: 0; }
+        86.89%, 88.56% { opacity: 1; }
+        88.67%, 100% { opacity: 0; }
+      }
+      .c-10-s2b { animation: char10_s2b 9s step-end infinite; }
+    
+      @keyframes flapFlip11 {
+        0%, 37.00% { transform: scaleY(1); }
+        37.89% { transform: scaleY(0.12); }
+        38.78% { transform: scaleY(1); }
+        39.67% { transform: scaleY(0.12); }
+        40.56% { transform: scaleY(1); }
+        41.44% { transform: scaleY(0.12); }
+        42.33%, 84.78% { transform: scaleY(1); }
+        85.67% { transform: scaleY(0.12); }
+        86.56% { transform: scaleY(1); }
+        87.44% { transform: scaleY(0.12); }
+        88.33% { transform: scaleY(1); }
+        89.22% { transform: scaleY(0.12); }
+        90.11%, 100% { transform: scaleY(1); }
+      }
+      .flap-anim-11 {
+        transform-origin: 23px 32px;
+        animation: flapFlip11 9s ease-in-out infinite;
+      }
+    
+      @keyframes char11_w1 {
+        0%, 37.89% { opacity: 1; }
+        38.00%, 89.22% { opacity: 0; }
+        89.33%, 100% { opacity: 1; }
+      }
+      .c-11-w1 { animation: char11_w1 9s step-end infinite; }
+    
+      @keyframes char11_s1a {
+        0%, 37.89% { opacity: 0; }
+        38.00%, 39.67% { opacity: 1; }
+        39.78%, 100% { opacity: 0; }
+      }
+      .c-11-s1a { animation: char11_s1a 9s step-end infinite; }
+    
+      @keyframes char11_s1b {
+        0%, 39.67% { opacity: 0; }
+        39.78%, 41.44% { opacity: 1; }
+        41.56%, 100% { opacity: 0; }
+      }
+      .c-11-s1b { animation: char11_s1b 9s step-end infinite; }
+    
+      @keyframes char11_s2a {
+        0%, 85.67% { opacity: 0; }
+        85.78%, 87.44% { opacity: 1; }
+        87.56%, 100% { opacity: 0; }
+      }
+      .c-11-s2a { animation: char11_s2a 9s step-end infinite; }
+    
+      @keyframes char11_s2b {
+        0%, 87.44% { opacity: 0; }
+        87.56%, 89.22% { opacity: 1; }
+        89.33%, 100% { opacity: 0; }
+      }
+      .c-11-s2b { animation: char11_s2b 9s step-end infinite; }
+    
+  </style>
+
+  <!-- ─── Background Layer ─── -->
+  <rect width="840" height="220" fill="#0d1117" />
+  
+  <!-- Cosmic Violet Radial Plasma -->
+  <ellipse cx="420" cy="110" rx="380" ry="105" fill="url(#crtGlow)" class="crt-glow" />
+
+  <!-- CRT Scanlines Overlay -->
+  <rect width="840" height="220" fill="url(#scanlines)" pointer-events="none" />
+
+  <!-- Outer Frame Subtle Border -->
+  <rect x="1" y="1" width="838" height="218" rx="12" fill="none" stroke="#21262d" stroke-width="1" />
+
+  <!-- ─── Split-Flap Board Layer ─── -->
+  <g filter="url(#tileShadow)">
+  
+    <g transform="translate(111, 78)">
+      <g class="flank-anim-0">
+        <g class="flap-anim-0">
+          <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+          <g clip-path="url(#tileTopClip)">
+            <rect width="46" height="32" fill="url(#tileTopGrad)" />
+            <text x="23" y="32" class="tile-text c-0-w1">t</text><text x="23" y="32" class="tile-text c-0-s1a">8</text><text x="23" y="32" class="tile-text c-0-s1b">q</text><text x="23" y="32" class="tile-text c-0-s2a">4</text><text x="23" y="32" class="tile-text c-0-s2b">k</text>
+          </g>
+          <g clip-path="url(#tileBottomClip)">
+            <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+            <text x="23" y="32" class="tile-text c-0-w1">t</text><text x="23" y="32" class="tile-text c-0-s1a">8</text><text x="23" y="32" class="tile-text c-0-s1b">q</text><text x="23" y="32" class="tile-text c-0-s2a">4</text><text x="23" y="32" class="tile-text c-0-s2b">k</text>
+          </g>
+          <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+          <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+        </g>
+      </g>
+    </g>
+    
+    <g transform="translate(163, 78)">
+      <g class="flank-anim-1">
+        <g class="flap-anim-1">
+          <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+          <g clip-path="url(#tileTopClip)">
+            <rect width="46" height="32" fill="url(#tileTopGrad)" />
+            <text x="23" y="32" class="tile-text c-1-w1">h</text><text x="23" y="32" class="tile-text c-1-s1a">3</text><text x="23" y="32" class="tile-text c-1-s1b">p</text><text x="23" y="32" class="tile-text c-1-s2a">7</text><text x="23" y="32" class="tile-text c-1-s2b">b</text>
+          </g>
+          <g clip-path="url(#tileBottomClip)">
+            <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+            <text x="23" y="32" class="tile-text c-1-w1">h</text><text x="23" y="32" class="tile-text c-1-s1a">3</text><text x="23" y="32" class="tile-text c-1-s1b">p</text><text x="23" y="32" class="tile-text c-1-s2a">7</text><text x="23" y="32" class="tile-text c-1-s2b">b</text>
+          </g>
+          <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+          <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+        </g>
+      </g>
+    </g>
+    <g class="core-slide">
+    <g transform="translate(215, 78)">
+      <g class="flap-anim-2">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-2-w1">i</text><text x="23" y="32" class="tile-text c-2-s1a">w</text><text x="23" y="32" class="tile-text c-2-s1b">5</text><text x="23" y="32" class="tile-text c-2-w2">e</text><text x="23" y="32" class="tile-text c-2-s2a">j</text><text x="23" y="32" class="tile-text c-2-s2b">9</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-2-w1">i</text><text x="23" y="32" class="tile-text c-2-s1a">w</text><text x="23" y="32" class="tile-text c-2-s1b">5</text><text x="23" y="32" class="tile-text c-2-w2">e</text><text x="23" y="32" class="tile-text c-2-s2a">j</text><text x="23" y="32" class="tile-text c-2-s2b">9</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    
+    <g transform="translate(267, 78)">
+      <g class="flap-anim-3">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-3-w1">n</text><text x="23" y="32" class="tile-text c-3-s1a">a</text><text x="23" y="32" class="tile-text c-3-s1b">2</text><text x="23" y="32" class="tile-text c-3-w2">x</text><text x="23" y="32" class="tile-text c-3-s2a">c</text><text x="23" y="32" class="tile-text c-3-s2b">6</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-3-w1">n</text><text x="23" y="32" class="tile-text c-3-s1a">a</text><text x="23" y="32" class="tile-text c-3-s1b">2</text><text x="23" y="32" class="tile-text c-3-w2">x</text><text x="23" y="32" class="tile-text c-3-s2a">c</text><text x="23" y="32" class="tile-text c-3-s2b">6</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    
+    <g transform="translate(319, 78)">
+      <g class="flap-anim-4">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-4-w1">k</text><text x="23" y="32" class="tile-text c-4-s1a">d</text><text x="23" y="32" class="tile-text c-4-s1b">8</text><text x="23" y="32" class="tile-text c-4-w2">p</text><text x="23" y="32" class="tile-text c-4-s2a">g</text><text x="23" y="32" class="tile-text c-4-s2b">1</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-4-w1">k</text><text x="23" y="32" class="tile-text c-4-s1a">d</text><text x="23" y="32" class="tile-text c-4-s1b">8</text><text x="23" y="32" class="tile-text c-4-w2">p</text><text x="23" y="32" class="tile-text c-4-s2a">g</text><text x="23" y="32" class="tile-text c-4-s2b">1</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    
+    <g transform="translate(371, 78)">
+      <g class="flap-anim-5">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-5-w1">2</text><text x="23" y="32" class="tile-text c-5-s1a">s</text><text x="23" y="32" class="tile-text c-5-s1b">9</text><text x="23" y="32" class="tile-text c-5-w2">l</text><text x="23" y="32" class="tile-text c-5-s2a">o</text><text x="23" y="32" class="tile-text c-5-s2b">4</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-5-w1">2</text><text x="23" y="32" class="tile-text c-5-s1a">s</text><text x="23" y="32" class="tile-text c-5-s1b">9</text><text x="23" y="32" class="tile-text c-5-w2">l</text><text x="23" y="32" class="tile-text c-5-s2a">o</text><text x="23" y="32" class="tile-text c-5-s2b">4</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    
+    <g transform="translate(423, 78)">
+      <g class="flap-anim-6">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-6-w1">t</text><text x="23" y="32" class="tile-text c-6-s1a">m</text><text x="23" y="32" class="tile-text c-6-s1b">7</text><text x="23" y="32" class="tile-text c-6-w2">o</text><text x="23" y="32" class="tile-text c-6-s2a">b</text><text x="23" y="32" class="tile-text c-6-s2b">3</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-6-w1">t</text><text x="23" y="32" class="tile-text c-6-s1a">m</text><text x="23" y="32" class="tile-text c-6-s1b">7</text><text x="23" y="32" class="tile-text c-6-w2">o</text><text x="23" y="32" class="tile-text c-6-s2a">b</text><text x="23" y="32" class="tile-text c-6-s2b">3</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    
+    <g transform="translate(475, 78)">
+      <g class="flap-anim-7">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-7-w1">h</text><text x="23" y="32" class="tile-text c-7-s1a">k</text><text x="23" y="32" class="tile-text c-7-s1b">6</text><text x="23" y="32" class="tile-text c-7-w2">r</text><text x="23" y="32" class="tile-text c-7-s2a">z</text><text x="23" y="32" class="tile-text c-7-s2b">8</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-7-w1">h</text><text x="23" y="32" class="tile-text c-7-s1a">k</text><text x="23" y="32" class="tile-text c-7-s1b">6</text><text x="23" y="32" class="tile-text c-7-w2">r</text><text x="23" y="32" class="tile-text c-7-s2a">z</text><text x="23" y="32" class="tile-text c-7-s2b">8</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    
+    <g transform="translate(527, 78)">
+      <g class="flap-anim-8">
+        <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+        <g clip-path="url(#tileTopClip)">
+          <rect width="46" height="32" fill="url(#tileTopGrad)" />
+          <text x="23" y="32" class="tile-text c-8-w1">r</text><text x="23" y="32" class="tile-text c-8-s1a">p</text><text x="23" y="32" class="tile-text c-8-s1b">4</text><text x="23" y="32" class="tile-text c-8-w2">e</text><text x="23" y="32" class="tile-text c-8-s2a">x</text><text x="23" y="32" class="tile-text c-8-s2b">5</text>
+        </g>
+        <g clip-path="url(#tileBottomClip)">
+          <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+          <text x="23" y="32" class="tile-text c-8-w1">r</text><text x="23" y="32" class="tile-text c-8-s1a">p</text><text x="23" y="32" class="tile-text c-8-s1b">4</text><text x="23" y="32" class="tile-text c-8-w2">e</text><text x="23" y="32" class="tile-text c-8-s2a">x</text><text x="23" y="32" class="tile-text c-8-s2b">5</text>
+        </g>
+        <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+        <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+      </g>
+    </g>
+    </g>
+    <g transform="translate(579, 78)">
+      <g class="flank-anim-9">
+        <g class="flap-anim-9">
+          <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+          <g clip-path="url(#tileTopClip)">
+            <rect width="46" height="32" fill="url(#tileTopGrad)" />
+            <text x="23" y="32" class="tile-text c-9-w1">i</text><text x="23" y="32" class="tile-text c-9-s1a">v</text><text x="23" y="32" class="tile-text c-9-s1b">1</text><text x="23" y="32" class="tile-text c-9-s2a">y</text><text x="23" y="32" class="tile-text c-9-s2b">2</text>
+          </g>
+          <g clip-path="url(#tileBottomClip)">
+            <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+            <text x="23" y="32" class="tile-text c-9-w1">i</text><text x="23" y="32" class="tile-text c-9-s1a">v</text><text x="23" y="32" class="tile-text c-9-s1b">1</text><text x="23" y="32" class="tile-text c-9-s2a">y</text><text x="23" y="32" class="tile-text c-9-s2b">2</text>
+          </g>
+          <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+          <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+        </g>
+      </g>
+    </g>
+    
+    <g transform="translate(631, 78)">
+      <g class="flank-anim-10">
+        <g class="flap-anim-10">
+          <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+          <g clip-path="url(#tileTopClip)">
+            <rect width="46" height="32" fill="url(#tileTopGrad)" />
+            <text x="23" y="32" class="tile-text c-10-w1">v</text><text x="23" y="32" class="tile-text c-10-s1a">g</text><text x="23" y="32" class="tile-text c-10-s1b">3</text><text x="23" y="32" class="tile-text c-10-s2a">n</text><text x="23" y="32" class="tile-text c-10-s2b">7</text>
+          </g>
+          <g clip-path="url(#tileBottomClip)">
+            <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+            <text x="23" y="32" class="tile-text c-10-w1">v</text><text x="23" y="32" class="tile-text c-10-s1a">g</text><text x="23" y="32" class="tile-text c-10-s1b">3</text><text x="23" y="32" class="tile-text c-10-s2a">n</text><text x="23" y="32" class="tile-text c-10-s2b">7</text>
+          </g>
+          <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+          <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+        </g>
+      </g>
+    </g>
+    
+    <g transform="translate(683, 78)">
+      <g class="flank-anim-11">
+        <g class="flap-anim-11">
+          <rect width="46" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+          <g clip-path="url(#tileTopClip)">
+            <rect width="46" height="32" fill="url(#tileTopGrad)" />
+            <text x="23" y="32" class="tile-text c-11-w1">e</text><text x="23" y="32" class="tile-text c-11-s1a">l</text><text x="23" y="32" class="tile-text c-11-s1b">8</text><text x="23" y="32" class="tile-text c-11-s2a">u</text><text x="23" y="32" class="tile-text c-11-s2b">6</text>
+          </g>
+          <g clip-path="url(#tileBottomClip)">
+            <rect y="32" width="46" height="32" fill="url(#tileBottomGrad)" />
+            <text x="23" y="32" class="tile-text c-11-w1">e</text><text x="23" y="32" class="tile-text c-11-s1a">l</text><text x="23" y="32" class="tile-text c-11-s1b">8</text><text x="23" y="32" class="tile-text c-11-s2a">u</text><text x="23" y="32" class="tile-text c-11-s2b">6</text>
+          </g>
+          <line x1="0" y1="31.5" x2="46" y2="31.5" class="crease-dark" />
+          <line x1="0" y1="32.5" x2="46" y2="32.5" class="crease-light" />
+        </g>
+      </g>
+    </g>
+    
+  </g>
+</svg>
