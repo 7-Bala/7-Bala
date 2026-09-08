@@ -1,5 +1,5 @@
 <div align="center">
 
-![think2thrive](./banner.svg)
+<img src="./ascii.svg" width="448" alt="explore"/>
 
 </div>
