@@ -16,7 +16,6 @@ const resolveCharset = charset => {
   return typeof charset === 'string' && charset.length > 0 ? charset : CHARSETS.alphanumeric;
 };
 
-// Center phrase within the total board width
 const centerPhrase = (phrase, totalWidth) => {
   const clean = String(phrase ?? '').trim();
   const len = clean.length;
@@ -26,7 +25,6 @@ const centerPhrase = (phrase, totalWidth) => {
   return ' '.repeat(leftPad) + clean + ' '.repeat(rightPad);
 };
 
-// Return non-padding active range so outer empty slots can gracefully dissolve
 const getActiveRange = phrase => {
   const str = String(phrase ?? '');
   const trimmed = str.trim();
@@ -61,13 +59,10 @@ const usePrefersReducedMotion = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
-
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const handleChange = () => setPrefersReduced(mediaQuery.matches);
-
     handleChange();
     mediaQuery.addEventListener('change', handleChange);
-
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
@@ -114,7 +109,10 @@ const SplitFlapText = ({
 
   const [tiles, setTiles] = useState(() => createTiles(normalizedPhrases[0] || ''));
   const [activeTargetPhrase, setActiveTargetPhrase] = useState(() => normalizedPhrases[0] || '');
-  const [isStretching, setIsStretching] = useState(false);
+  // isExpanding: true means we are going from shorter -> longer word (explore -> think2thrive)
+  // isCollapsing: true means going from longer -> shorter (think2thrive -> explore)
+  const [isExpanding, setIsExpanding] = useState(false);
+  const [isCollapsing, setIsCollapsing] = useState(false);
 
   useEffect(() => {
     const clearAnimation = () => {
@@ -122,7 +120,6 @@ const SplitFlapText = ({
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
-
       if (cycleTimerRef.current) {
         clearTimeout(cycleTimerRef.current);
         cycleTimerRef.current = null;
@@ -135,6 +132,8 @@ const SplitFlapText = ({
     currentTextRef.current = firstPhrase;
     setActiveTargetPhrase(firstPhrase);
     setTiles(createTiles(firstPhrase));
+    setIsExpanding(false);
+    setIsCollapsing(false);
 
     if (normalizedPhrases.length <= 1 || typeof window === 'undefined') {
       return clearAnimation;
@@ -154,9 +153,20 @@ const SplitFlapText = ({
 
       const prevClean = String(currentTextRef.current ?? '').trim();
       const nextClean = String(targetPhrase ?? '').trim();
+
       if (nextClean.length > prevClean.length) {
-        setIsStretching(true);
-        window.setTimeout(() => setIsStretching(false), 550);
+        // Expanding: explore -> think2thrive
+        setIsExpanding(true);
+        setIsCollapsing(false);
+        window.setTimeout(() => setIsExpanding(false), 550);
+      } else if (nextClean.length < prevClean.length) {
+        // Collapsing: think2thrive -> explore
+        setIsCollapsing(true);
+        setIsExpanding(false);
+        window.setTimeout(() => setIsCollapsing(false), 500);
+      } else {
+        setIsExpanding(false);
+        setIsCollapsing(false);
       }
 
       if (prefersReducedMotion) {
@@ -172,7 +182,6 @@ const SplitFlapText = ({
         .map((targetChar, index) => {
           const fromChar = fromPhrase[index] || ' ';
           if (fromChar === targetChar) return null;
-
           return {
             index,
             from: fromChar,
@@ -203,7 +212,6 @@ const SplitFlapText = ({
           updates.forEach(update => {
             const tile = nextTiles[update.index];
             if (!tile) return;
-
             nextTiles[update.index] = {
               current: update.current,
               next: update.next,
@@ -307,16 +315,26 @@ const SplitFlapText = ({
 
   const { start: activeStart, end: activeEnd } = getActiveRange(activeTargetPhrase);
 
-  // Core anchor range calculated from shortest phrase (explore -> [2, 9))
+  // Core range = range of the shortest word when centered
   const shortestPhrase = useMemo(() => {
-    return phrases.reduce((min, p) => (String(p ?? '').trim().length < String(min ?? '').trim().length ? p : min), phrases[0] || '');
+    return phrases.reduce(
+      (min, p) => (String(p ?? '').trim().length < String(min ?? '').trim().length ? p : min),
+      phrases[0] || ''
+    );
   }, [phrases]);
-  const coreRange = useMemo(() => getActiveRange(centerPhrase(shortestPhrase, width)), [shortestPhrase, width]);
+
+  const coreRange = useMemo(
+    () => getActiveRange(centerPhrase(shortestPhrase, width)),
+    [shortestPhrase, width]
+  );
 
   const coreStart = coreRange.start !== -1 ? coreRange.start : 2;
   const coreEnd = coreRange.end !== -1 ? coreRange.end : 9;
-  const maxLeftDist = Math.max(0, coreStart - 1);
-  const maxRightDist = Math.max(0, width - coreEnd - 1);
+
+  // Gap size in CSS units
+  const halfGapPx = `calc(${toCssUnit(gap)} / 2)`;
+  // Normal slot width in em
+  const slotWidth = '0.78em';
 
   return React.createElement(
     'div',
@@ -328,48 +346,74 @@ const SplitFlapText = ({
       ...props
     },
     tiles.map((tile, index) => {
-      const isSlotEmpty = activeStart !== -1 && (index < activeStart || index >= activeEnd);
+      const isOutsideActive = activeStart !== -1 && (index < activeStart || index >= activeEnd);
       const isLeftFlank = index < coreStart;
       const isRightFlank = index >= coreEnd;
       const isLeftAnchor = index === coreStart;
       const isRightAnchor = index === coreEnd - 1;
 
+      // Distance from the core boundary (1-indexed: closest = 1)
       let flankDist = 0;
-      let squeezeDelay = 0;
-      let flankClasses = '';
+      let slotClasses = '';
+      let expandDelay = 0;
+      let collapseDelay = 0;
 
       if (isLeftFlank) {
-        flankClasses = 'slot-flank-left';
-        flankDist = coreStart - 1 - index;
-        squeezeDelay = (maxLeftDist - flankDist) * 0.08;
+        flankDist = coreStart - index; // 1 for closest, higher for further
+        // Expand from inside-out: closest tile stretches first
+        expandDelay = (flankDist - 1) * 0.07;
+        // Collapse from outside-in: furthest tile collapses first
+        collapseDelay = (flankDist - 1) * 0.06;
+        slotClasses = 'slot-flank';
       } else if (isRightFlank) {
-        flankClasses = 'slot-flank-right';
-        flankDist = index - coreEnd;
-        squeezeDelay = (maxRightDist - flankDist) * 0.07;
+        flankDist = index - coreEnd + 1; // 1 for closest
+        expandDelay = (flankDist - 1) * 0.07;
+        collapseDelay = (flankDist - 1) * 0.06;
+        slotClasses = 'slot-flank';
       } else if (isLeftAnchor) {
-        flankClasses = `slot-anchor-left ${isStretching ? 'is-stretching' : ''}`;
+        slotClasses = `slot-anchor-left${isExpanding ? ' is-stretching' : ''}`;
       } else if (isRightAnchor) {
-        flankClasses = `slot-anchor-right ${isStretching ? 'is-stretching' : ''}`;
+        slotClasses = `slot-anchor-right${isExpanding ? ' is-stretching' : ''}`;
       }
 
-      const slotStyle = {
-        '--flank-dist': flankDist,
-        '--squeeze-delay': `${squeezeDelay.toFixed(3)}s`
-      };
+      const isFlank = isLeftFlank || isRightFlank;
+      const isEmpty = isFlank && isOutsideActive;
+
+      if (isFlank) {
+        slotClasses += isEmpty ? ' is-empty' : '';
+        if (isCollapsing) slotClasses += ' is-collapsing';
+      }
+
+      // Inline styles drive the actual geometry — transition in CSS handles the animation
+      const slotStyle = {};
+
+      if (isFlank) {
+        // When visible: normal width + gap margin
+        // When empty: width=0, margin=0 (set via CSS .is-empty)
+        slotStyle.width = isEmpty ? '0' : slotWidth;
+        slotStyle.marginLeft = isEmpty ? '0' : halfGapPx;
+        slotStyle.marginRight = isEmpty ? '0' : halfGapPx;
+        slotStyle.transitionDelay = isEmpty
+          ? `${collapseDelay.toFixed(3)}s`
+          : `${expandDelay.toFixed(3)}s`;
+      } else {
+        slotStyle.width = slotWidth;
+        slotStyle.marginLeft = halfGapPx;
+        slotStyle.marginRight = halfGapPx;
+      }
 
       return React.createElement(
         'span',
         {
-          className: `split-flap-text__slot ${flankClasses} ${isSlotEmpty ? 'is-empty' : ''}`.trim(),
+          className: `split-flap-text__slot ${slotClasses}`.trim(),
           style: slotStyle,
           'aria-hidden': 'true',
           key: `slot-${index}`
         },
         React.createElement(
           'span',
-          {
-            className: 'split-flap-text__tile'
-          },
+          { className: 'split-flap-text__tile' },
+          // Top static half
           React.createElement(
             'span',
             { className: 'split-flap-text__half split-flap-text__half--top' },
@@ -379,6 +423,7 @@ const SplitFlapText = ({
               tile.current === ' ' ? '\u00A0' : tile.current
             )
           ),
+          // Bottom static half
           React.createElement(
             'span',
             { className: 'split-flap-text__half split-flap-text__half--bottom' },
@@ -388,6 +433,7 @@ const SplitFlapText = ({
               tile.flipping ? tile.next : tile.current
             )
           ),
+          // Animated flap pair — only when flipping
           tile.flipping
             ? React.createElement(
                 React.Fragment,
