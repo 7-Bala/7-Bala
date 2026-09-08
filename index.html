@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GitHub README — SplitFlapText (CURIOUS → EXPLORE) with CRTWarp</title>
+  <title>GitHub README — SplitFlapText (think2thrive → explore) with CRTWarp</title>
   <link rel="stylesheet" href="./CRTWarp.css" />
   <link rel="stylesheet" href="./SplitFlapText.css" />
   <style>
@@ -19,7 +19,7 @@
       --color-fg-default: #f0f6fc;
       --color-fg-muted: #8b949e;
       --color-fg-subtle: #6e7681;
-      --color-accent-fg: #58a6ff;
+      --color-accent-fg: #c755f7;
       --color-btn-bg: #21262d;
       --color-btn-border: #30363d;
       --color-btn-hover-bg: #30363d;
@@ -27,9 +27,9 @@
       --color-btn-primary-hover: #2ea043;
       --color-btn-primary-border: #2ea043;
       --color-btn-primary-text: #ffffff;
-      --tag-crt-bg: rgba(88, 166, 255, 0.12);
-      --tag-crt-border: rgba(88, 166, 255, 0.35);
-      --tag-crt-color: #58a6ff;
+      --tag-crt-bg: rgba(199, 85, 247, 0.15);
+      --tag-crt-border: rgba(199, 85, 247, 0.4);
+      --tag-crt-color: #c755f7;
       --stage-height: 240px;
     }
 
@@ -41,7 +41,7 @@
       --color-fg-default: #1f2328;
       --color-fg-muted: #656d76;
       --color-fg-subtle: #8c959f;
-      --color-accent-fg: #0969da;
+      --color-accent-fg: #9333ea;
       --color-btn-bg: #f6f8fa;
       --color-btn-border: #d0d7de;
       --color-btn-hover-bg: #eff1f3;
@@ -49,9 +49,9 @@
       --color-btn-primary-hover: #1a7f37;
       --color-btn-primary-border: #1a7f37;
       --color-btn-primary-text: #ffffff;
-      --tag-crt-bg: rgba(9, 105, 218, 0.1);
-      --tag-crt-border: rgba(9, 105, 218, 0.3);
-      --tag-crt-color: #0969da;
+      --tag-crt-bg: rgba(147, 51, 234, 0.12);
+      --tag-crt-border: rgba(147, 51, 234, 0.35);
+      --tag-crt-color: #9333ea;
     }
 
     * {
@@ -140,16 +140,6 @@
       background: var(--color-btn-hover-bg);
     }
 
-    .btn-primary {
-      background: var(--color-btn-primary-bg);
-      border-color: var(--color-btn-primary-border);
-      color: var(--color-btn-primary-text);
-    }
-
-    .btn-primary:hover {
-      background: var(--color-btn-primary-hover);
-    }
-
     main {
       width: 100%;
       max-width: 960px;
@@ -230,7 +220,7 @@
 
     .crt-overlay .split-flap-text {
       pointer-events: auto;
-      filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
+      filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.7));
     }
 
     /* Standard GitHub Readme Stage */
@@ -349,18 +339,10 @@
       <div class="title-area">
         <h1>
           <span>🧭</span> 7-Bala / README.md
-          <span class="badge">&lt;SplitFlapText /&gt; React Bits</span>
+          <span class="badge">Cosmic Violet Edition</span>
         </h1>
       </div>
       <div class="controls">
-        <button id="toggleWordsBtn" class="btn" title="Toggle words between CURIOUS ➔ EXPLORE and think2thrive ➔ explore">
-          <span>🔄</span>
-          <span id="wordsText">Words: CURIOUS ➔ EXPLORE</span>
-        </button>
-        <button id="toggleCrtColorBtn" class="btn" title="Toggle CRTWarp color between GitHub Electric Blue and Cosmic Violet">
-          <span>🎨</span>
-          <span id="crtColorText">Color: Electric Blue</span>
-        </button>
         <button id="toggleThemeBtn" class="btn" title="Toggle between Dark and Light mode">
           <span id="themeIcon">☀️</span>
           <span id="themeText">Switch to Light Mode</span>
@@ -370,12 +352,12 @@
   </header>
 
   <main>
-    <!-- CRTWarp with SplitFlapText (CURIOUS -> EXPLORE) -->
+    <!-- CRTWarp with SplitFlapText (think2thrive -> explore) -->
     <div class="preview-card">
       <div class="card-header">
-        <span>&lt;CRTWarp /&gt; + &lt;SplitFlapText /&gt; (CURIOUS ➔ EXPLORE)</span>
+        <span>&lt;CRTWarp /&gt; + &lt;SplitFlapText /&gt; (think2thrive ➔ explore)</span>
         <div class="theme-tags">
-          <span id="crtColorTag" class="theme-tag crt">#58a6ff (GitHub Accent)</span>
+          <span class="theme-tag crt">#c755f7 (Cosmic Violet)</span>
           <span class="theme-tag dark">bg="#0d1117"</span>
         </div>
       </div>
@@ -386,8 +368,8 @@
     <!-- Standalone SplitFlapText Mechanical Departure Board Card -->
     <div class="preview-card">
       <div class="card-header">
-        <span>Mechanical Flap Board &lt;SplitFlapText /&gt; (Height: 240px)</span>
-        <span id="currentModeLabel" class="theme-tag dark">Dark Theme (#0d1117)</span>
+        <span>Mechanical Flap Board &lt;SplitFlapText /&gt; (think2thrive ➔ explore)</span>
+        <span id="currentModeLabel" class="theme-tag dark">GitHub Charcoal (#161b22)</span>
       </div>
       <div id="mainStage" class="readme-stage dark-mode">
         <div class="stage-wrapper" id="standalone-splitflap-root"></div>
@@ -415,37 +397,24 @@
 
     <div class="info-footer">
       <div class="info-row">
-        <span><strong>Component:</strong> <code>&lt;SplitFlapText /&gt;</code> (React Bits JS + CSS variant)</span>
-        <span><strong>Words:</strong> <code>['CURIOUS', 'EXPLORE']</code> (Curious first, then Explore)</span>
+        <span><strong>Words:</strong> <code>['think2thrive', 'explore']</code> (Lowercase, centered, smooth transition)</span>
+        <span><strong>Palette:</strong> Cosmic Violet (<code>#c755f7</code>) &amp; Pure White (<code>#ffffff</code>)</span>
       </div>
       <div class="info-row">
-        <span><strong>Configuration:</strong> <code>flipDuration={0.12}</code>, <code>stagger={0.06}</code>, <code>cycleDelay={2400}</code>, <code>padTo={7}</code></span>
-        <span><strong>Background:</strong> <code>&lt;CRTWarp /&gt;</code> interactive WebGL plasma (Height: <code>240px</code>)</span>
+        <span><strong>Configuration:</strong> <code>flipDuration={0.11}</code>, <code>stagger={0.05}</code>, <code>cycleDelay={2400}</code>, <code>padTo={12}</code></span>
+        <span><strong>Empty Boxes:</strong> Centered graceful dissolve &amp; shrink (zero horizontal jitter)</span>
       </div>
     </div>
   </main>
 
   <!-- React mounting script -->
   <script type="module">
-    import React, { useState } from 'react';
+    import React from 'react';
     import { createRoot } from 'react-dom/client';
     import CRTWarp from './CRTWarp.js';
     import SplitFlapText from './SplitFlapText.js';
 
-    let setCrtColorGlobal = null;
-    let setWordsGlobal = null;
-
     function CRTWarpWithSplitFlap() {
-      const [plasmaColor, setPlasmaColor] = useState('#58a6ff');
-      const [wordState, setWordState] = useState({
-        words: ['CURIOUS', 'EXPLORE'],
-        padTo: 7,
-        fontSize: 48
-      });
-
-      setCrtColorGlobal = setPlasmaColor;
-      setWordsGlobal = setWordState;
-
       return React.createElement(
         'div',
         {
@@ -457,16 +426,16 @@
           }
         },
         React.createElement(CRTWarp, {
-          color: plasmaColor,
+          color: '#c755f7',
           backgroundColor: '#0d1117',
           speed: 0.5,
-          curvature: 0.25,
-          scanlineStrength: 0.25,
+          curvature: 0.22,
+          scanlineStrength: 0.22,
           scanlineFrequency: 200,
           waveAmplitude: 0.3,
           waveFrequency: 2.5,
-          bloom: 1.5,
-          bloomRadius: 1,
+          bloom: 1.6,
+          bloomRadius: 1.1,
           noise: 0.08,
           vignette: 0,
           brightness: 1.2,
@@ -481,19 +450,19 @@
           'div',
           { className: 'crt-overlay' },
           React.createElement(SplitFlapText, {
-            words: wordState.words,
-            flipDuration: 0.12,
-            stagger: 0.06,
+            words: ['think2thrive', 'explore'],
+            flipDuration: 0.11,
+            stagger: 0.05,
             cycleDelay: 2400,
             charset: 'alphanumeric',
             flipsPerChar: 8,
             tileColor: '#161b22',
-            textColor: '#f0f6fc',
+            textColor: '#ffffff',
             tileRadius: 8,
             gap: 6,
-            fontSize: wordState.fontSize,
+            fontSize: 44,
             loop: true,
-            padTo: wordState.padTo
+            padTo: 12
           })
         )
       );
@@ -503,112 +472,65 @@
     const crtContainer = document.getElementById('crt-warp-root');
     createRoot(crtContainer).render(React.createElement(CRTWarpWithSplitFlap));
 
-    // Mount Standalone SplitFlap in main stage
+    // Mount Standalone SplitFlap in main stage (Strictly White Text, no blue)
     const standaloneContainer = document.getElementById('standalone-splitflap-root');
-    const standaloneRoot = createRoot(standaloneContainer);
-    function renderStandalone(words, padTo, fontSize) {
-      standaloneRoot.render(
-        React.createElement(SplitFlapText, {
-          words: words,
-          flipDuration: 0.12,
-          stagger: 0.06,
-          cycleDelay: 2400,
-          charset: 'alphanumeric',
-          flipsPerChar: 8,
-          tileColor: '#161b22',
-          textColor: '#58a6ff',
-          tileRadius: 8,
-          gap: 6,
-          fontSize: fontSize,
-          loop: true,
-          padTo: padTo
-        })
-      );
-    }
-    renderStandalone(['CURIOUS', 'EXPLORE'], 7, 48);
+    createRoot(standaloneContainer).render(
+      React.createElement(SplitFlapText, {
+        words: ['think2thrive', 'explore'],
+        flipDuration: 0.11,
+        stagger: 0.05,
+        cycleDelay: 2400,
+        charset: 'alphanumeric',
+        flipsPerChar: 8,
+        tileColor: '#161b22',
+        textColor: '#ffffff',
+        tileRadius: 8,
+        gap: 6,
+        fontSize: 44,
+        loop: true,
+        padTo: 12
+      })
+    );
 
-    // Mount Dark sub-stage
+    // Mount Dark sub-stage (Strictly White Text)
     const darkSubContainer = document.getElementById('sub-stage-dark');
-    const darkSubRoot = createRoot(darkSubContainer);
-    function renderDark(words, padTo, fontSize) {
-      darkSubRoot.render(
-        React.createElement(SplitFlapText, {
-          words: words,
-          flipDuration: 0.12,
-          stagger: 0.06,
-          cycleDelay: 2400,
-          charset: 'alphanumeric',
-          flipsPerChar: 8,
-          tileColor: '#161b22',
-          textColor: '#f0f6fc',
-          tileRadius: 6,
-          gap: 5,
-          fontSize: fontSize,
-          loop: true,
-          padTo: padTo
-        })
-      );
-    }
-    renderDark(['CURIOUS', 'EXPLORE'], 7, 34);
+    createRoot(darkSubContainer).render(
+      React.createElement(SplitFlapText, {
+        words: ['think2thrive', 'explore'],
+        flipDuration: 0.11,
+        stagger: 0.05,
+        cycleDelay: 2400,
+        charset: 'alphanumeric',
+        flipsPerChar: 8,
+        tileColor: '#161b22',
+        textColor: '#ffffff',
+        tileRadius: 6,
+        gap: 5,
+        fontSize: 30,
+        loop: true,
+        padTo: 12
+      })
+    );
 
-    // Mount Light sub-stage
+    // Mount Light sub-stage (Strictly White Text on charcoal tiles)
     const lightSubContainer = document.getElementById('sub-stage-light');
-    const lightSubRoot = createRoot(lightSubContainer);
-    function renderLight(words, padTo, fontSize) {
-      lightSubRoot.render(
-        React.createElement(SplitFlapText, {
-          words: words,
-          flipDuration: 0.12,
-          stagger: 0.06,
-          cycleDelay: 2400,
-          charset: 'alphanumeric',
-          flipsPerChar: 8,
-          tileColor: '#24292f',
-          textColor: '#f6f8fa',
-          tileRadius: 6,
-          gap: 5,
-          fontSize: fontSize,
-          loop: true,
-          padTo: padTo
-        })
-      );
-    }
-    renderLight(['CURIOUS', 'EXPLORE'], 7, 34);
-
-    // Words toggle listener
-    const toggleWordsBtn = document.getElementById('toggleWordsBtn');
-    const wordsText = document.getElementById('wordsText');
-    let isCuriousMode = true;
-
-    toggleWordsBtn.addEventListener('click', () => {
-      isCuriousMode = !isCuriousMode;
-      const newWords = isCuriousMode ? ['CURIOUS', 'EXPLORE'] : ['think2thrive', 'explore'];
-      const padLen = isCuriousMode ? 7 : 12;
-      const fSize = isCuriousMode ? 48 : 38;
-      const subSize = isCuriousMode ? 34 : 26;
-
-      wordsText.textContent = isCuriousMode ? 'Words: CURIOUS ➔ EXPLORE' : 'Words: think2thrive ➔ explore';
-      if (setWordsGlobal) {
-        setWordsGlobal({ words: newWords, padTo: padLen, fontSize: fSize });
-      }
-      renderStandalone(newWords, padLen, fSize);
-      renderDark(newWords, padLen, subSize);
-      renderLight(newWords, padLen, subSize);
-    });
-
-    // Color toggle button listener
-    const toggleCrtColorBtn = document.getElementById('toggleCrtColorBtn');
-    const crtColorText = document.getElementById('crtColorText');
-    const crtColorTag = document.getElementById('crtColorTag');
-    let isBlue = true;
-
-    toggleCrtColorBtn.addEventListener('click', () => {
-      isBlue = !isBlue;
-      const newColor = isBlue ? '#58a6ff' : '#c755f7';
-      if (setCrtColorGlobal) setCrtColorGlobal(newColor);
-      crtColorText.textContent = isBlue ? 'Color: Electric Blue' : 'Color: Cosmic Violet';
-      crtColorTag.textContent = isBlue ? '#58a6ff (GitHub Accent)' : '#c755f7 (Cosmic Violet)';
-    });
+    createRoot(lightSubContainer).render(
+      React.createElement(SplitFlapText, {
+        words: ['think2thrive', 'explore'],
+        flipDuration: 0.11,
+        stagger: 0.05,
+        cycleDelay: 2400,
+        charset: 'alphanumeric',
+        flipsPerChar: 8,
+        tileColor: '#24292f',
+        textColor: '#ffffff',
+        tileRadius: 6,
+        gap: 5,
+        fontSize: 30,
+        loop: true,
+        padTo: 12
+      })
+    );
 
     // Theme toggle
     const toggleThemeBtn = document.getElementById('toggleThemeBtn');
@@ -624,7 +546,7 @@
         document.documentElement.removeAttribute('data-theme');
         mainStage.classList.remove('light-mode');
         mainStage.classList.add('dark-mode');
-        currentModeLabel.textContent = 'Dark Theme (#0d1117)';
+        currentModeLabel.textContent = 'GitHub Charcoal (#161b22)';
         currentModeLabel.className = 'theme-tag dark';
         themeIcon.textContent = '☀️';
         themeText.textContent = 'Switch to Light Mode';
@@ -632,7 +554,7 @@
         document.documentElement.setAttribute('data-theme', 'light');
         mainStage.classList.remove('dark-mode');
         mainStage.classList.add('light-mode');
-        currentModeLabel.textContent = 'Light Theme (#ffffff)';
+        currentModeLabel.textContent = 'Light Canvas (#ffffff)';
         currentModeLabel.className = 'theme-tag light';
         themeIcon.textContent = '🌙';
         themeText.textContent = 'Switch to Dark Mode';

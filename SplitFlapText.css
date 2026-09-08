@@ -1,10 +1,20 @@
+:root {
+  --split-flap-tile-color: #161b22;
+  --split-flap-text-color: #ffffff;
+  --split-flap-radius: 8px;
+  --split-flap-gap: 6px;
+  --split-flap-font-size: 50px;
+  --split-flap-flip-duration: 0.11s;
+}
+
 .split-flap-text {
   display: inline-flex;
   align-items: center;
-  gap: var(--split-flap-gap, 6px);
-  color: var(--split-flap-text-color, #f8fafc);
+  justify-content: center;
+  gap: 0;
+  color: var(--split-flap-text-color, #ffffff);
   font-family: 'SFMono-Regular', 'Roboto Mono', 'Cascadia Code', 'Liberation Mono', Menlo, monospace;
-  font-size: var(--split-flap-font-size, 52px);
+  font-size: var(--split-flap-font-size, 50px);
   font-weight: 760;
   line-height: 1;
   letter-spacing: 0.035em;
@@ -13,18 +23,50 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Slot wrapper that allows centered dissolve-and-shrink for empty boxes */
+.split-flap-text__slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.78em;
+  min-width: 0;
+  opacity: 1;
+  transform: scale(1);
+  margin: 0 calc(var(--split-flap-gap, 6px) / 2);
+  overflow: hidden;
+  box-sizing: border-box;
+  transition:
+    width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s ease,
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: width, opacity, margin, transform;
+}
+
+/* When a slot becomes empty (outer padding for shorter words like 'explore'), smoothly shrink & dissolve */
+.split-flap-text__slot.is-empty {
+  width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  opacity: 0 !important;
+  transform: scale(0.82) !important;
+  pointer-events: none !important;
+}
+
 .split-flap-text__tile {
   position: relative;
   width: 0.78em;
   height: 1.08em;
+  min-width: 0.78em;
+  flex-shrink: 0;
   overflow: hidden;
   border-radius: var(--split-flap-radius, 8px);
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 44%),
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--split-flap-tile-color, #111827) 82%, white),
-      var(--split-flap-tile-color, #111827)
+      color-mix(in srgb, var(--split-flap-tile-color, #161b22) 82%, white),
+      var(--split-flap-tile-color, #161b22)
     );
   box-shadow:
     0 0.035em 0.08em rgba(255, 255, 255, 0.08) inset,
@@ -76,7 +118,8 @@
   height: 50%;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 34%), var(--split-flap-tile-color, #111827);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 34%),
+    var(--split-flap-tile-color, #161b22);
   backface-visibility: hidden;
 }
 
@@ -94,9 +137,10 @@
 .split-flap-text__flap--back {
   background:
     linear-gradient(0deg, rgba(255, 255, 255, 0.06), transparent 38%),
-    color-mix(in srgb, var(--split-flap-tile-color, #111827) 92%, black);
+    color-mix(in srgb, var(--split-flap-tile-color, #161b22) 92%, black);
 }
 
+/* Strict white text styling across all states and flaps - no color changing */
 .split-flap-text__char {
   position: absolute;
   left: 0;
@@ -105,7 +149,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--split-flap-text-color, #f8fafc);
+  color: var(--split-flap-text-color, #ffffff) !important;
   text-shadow:
     0 0.025em 0 rgba(255, 255, 255, 0.16),
     0 0.09em 0.16em rgba(0, 0, 0, 0.42);
@@ -129,13 +173,13 @@
 
 .split-flap-text__flap--front {
   transform-origin: center bottom;
-  animation: split-flap-front var(--split-flap-flip-duration, 0.12s) cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation: split-flap-front var(--split-flap-flip-duration, 0.11s) cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 .split-flap-text__flap--back {
   transform-origin: center top;
   transform: rotateX(90deg);
-  animation: split-flap-back var(--split-flap-flip-duration, 0.12s) cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation: split-flap-back var(--split-flap-flip-duration, 0.11s) cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 @keyframes split-flap-front {
@@ -164,6 +208,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .split-flap-text__slot {
+    transition: none !important;
+  }
   .split-flap-text__flap {
     animation: none !important;
   }

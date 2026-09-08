@@ -25,27 +25,15 @@
       position: relative;
       width: 840px;
       height: 220px;
-      background: #08060e;
+      background: #0d1117;
       overflow: hidden;
     }
     .crt-warp-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
-      background: #08060e;
+      background: #0d1117;
       overflow: hidden;
-      mask-image: radial-gradient(ellipse 96% 90% at 50% 50%, black 50%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 96% 90% at 50% 50%, black 50%, transparent 100%);
-    }
-    .crt-warp-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(ellipse 96% 90% at 50% 50%, transparent 50%, #0d1117 100%),
-                  linear-gradient(to right, #0d1117 0%, transparent 8%, transparent 92%, #0d1117 100%),
-                  linear-gradient(to bottom, #0d1117 0%, transparent 10%, transparent 90%, #0d1117 100%);
-      z-index: 5;
     }
     .crt-overlay {
       position: absolute;
@@ -58,7 +46,7 @@
     }
     .crt-overlay .split-flap-text {
       pointer-events: auto;
-      filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(199, 85, 247, 0.4));
+      filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.85));
     }
   </style>
   <script type="importmap">
@@ -90,18 +78,18 @@
         { className: 'crt-warp-wrapper' },
         React.createElement(CRTWarp, {
           color: '#c755f7',
-          backgroundColor: '#08060e',
+          backgroundColor: '#0d1117',
           speed: 0.5,
           curvature: 0.22,
           scanlineStrength: 0.22,
           scanlineFrequency: 200,
           waveAmplitude: 0.3,
           waveFrequency: 2.5,
-          bloom: 1.5,
-          bloomRadius: 1,
-          noise: 0.0,
-          vignette: 1.2,
-          brightness: 1.25,
+          bloom: 1.6,
+          bloomRadius: 1.1,
+          noise: 0.05,
+          vignette: 0,
+          brightness: 1.2,
           pixelation: 1,
           rgbShift: 0.015,
           mouseReact: false,
@@ -117,12 +105,13 @@
             stagger: 0.035,
             cycleDelay: 1600,
             charset: 'alphanumeric',
-            flipsPerChar: 5,
-            tileColor: '#120d1c',
-            textColor: '#f8fafc',
+            flipsPerChar: 6,
+            tileColor: '#161b22',
+            textColor: '#ffffff',
             tileRadius: 8,
-            gap: 7,
-            fontSize: 46,
+            gap: 6,
+            fontSize: 44,
+            padTo: 12,
             loop: true
           })
         )

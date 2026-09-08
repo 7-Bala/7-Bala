@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import './SplitFlapText.css';
 
-const DEFAULT_WORDS = ['LAUNCH READY', 'SYNC ONLINE', 'SIGNAL LIVE'];
+const DEFAULT_WORDS = ['think2thrive', 'explore'];
 
 const CHARSETS = {
   alpha: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-  alphanumeric: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+  alphanumeric: 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   numeric: '0123456789'
 };
 
@@ -15,9 +16,24 @@ const resolveCharset = charset => {
   return typeof charset === 'string' && charset.length > 0 ? charset : CHARSETS.alphanumeric;
 };
 
-const normalizePhrase = (phrase, width) => {
-  const safe = String(phrase ?? '');
-  return safe.padEnd(width, ' ').slice(0, width);
+// Center phrase within the total board width
+const centerPhrase = (phrase, totalWidth) => {
+  const clean = String(phrase ?? '').trim();
+  const len = clean.length;
+  if (len >= totalWidth) return clean.slice(0, totalWidth);
+  const leftPad = Math.floor((totalWidth - len) / 2);
+  const rightPad = totalWidth - len - leftPad;
+  return ' '.repeat(leftPad) + clean + ' '.repeat(rightPad);
+};
+
+// Return non-padding active range so outer empty slots can gracefully dissolve
+const getActiveRange = phrase => {
+  const str = String(phrase ?? '');
+  const trimmed = str.trim();
+  if (!trimmed) return { start: -1, end: -1 };
+  const start = str.indexOf(trimmed);
+  const end = start + trimmed.length;
+  return { start, end };
 };
 
 const createTiles = phrase =>
@@ -28,9 +44,10 @@ const createTiles = phrase =>
     tick: 0
   }));
 
-const sampleChar = charset => charset.charAt(Math.floor(Math.random() * charset.length)) || ' ';
+const sampleChar = charset => charset.charAt(Math.floor(Math.random() * charset.length)) || 'a';
 
 const buildSequence = (target, flips, charset) => {
+  if (target === ' ') return [' '];
   const steps = [];
   for (let i = 0; i < flips; i += 1) {
     steps.push(sampleChar(charset));
@@ -58,18 +75,18 @@ const usePrefersReducedMotion = () => {
 };
 
 const SplitFlapText = ({
-  words = ['LAUNCH READY', 'SYNC ONLINE', 'SIGNAL LIVE'],
+  words = ['think2thrive', 'explore'],
   text,
-  flipDuration = 0.12,
-  stagger = 0.06,
+  flipDuration = 0.11,
+  stagger = 0.05,
   cycleDelay = 2400,
   charset = 'alphanumeric',
   flipsPerChar = 8,
-  tileColor = '#111827',
-  textColor = '#f8fafc',
+  tileColor = '#161b22',
+  textColor = '#ffffff',
   tileRadius = 8,
   gap = 6,
-  fontSize = 52,
+  fontSize = 46,
   loop = true,
   padTo = 12,
   className = '',
@@ -86,13 +103,17 @@ const SplitFlapText = ({
   const phrases = useMemo(() => phrasesKey.split('\u001f'), [phrasesKey]);
 
   const width = useMemo(() => {
-    const longest = phrases.reduce((max, phrase) => Math.max(max, phrase.length), 1);
+    const longest = phrases.reduce((max, phrase) => Math.max(max, String(phrase ?? '').trim().length), 1);
     return Math.max(1, Math.ceil(Number(padTo) || 0), longest);
   }, [padTo, phrases]);
 
-  const normalizedPhrases = useMemo(() => phrases.map(phrase => normalizePhrase(phrase, width)), [phrases, width]);
+  const normalizedPhrases = useMemo(
+    () => phrases.map(phrase => centerPhrase(phrase, width)),
+    [phrases, width]
+  );
 
   const [tiles, setTiles] = useState(() => createTiles(normalizedPhrases[0] || ''));
+  const [activeTargetPhrase, setActiveTargetPhrase] = useState(() => normalizedPhrases[0] || '');
 
   useEffect(() => {
     const clearAnimation = () => {
@@ -111,6 +132,7 @@ const SplitFlapText = ({
 
     const firstPhrase = normalizedPhrases[0] || '';
     currentTextRef.current = firstPhrase;
+    setActiveTargetPhrase(firstPhrase);
     setTiles(createTiles(firstPhrase));
 
     if (normalizedPhrases.length <= 1 || typeof window === 'undefined') {
@@ -120,20 +142,22 @@ const SplitFlapText = ({
     let phraseIndex = 0;
     let cancelled = false;
 
-    const safeFlipMs = Math.max(40, (Number(flipDuration) || 0.12) * 1000);
+    const safeFlipMs = Math.max(35, (Number(flipDuration) || 0.11) * 1000);
     const safeStaggerMs = Math.max(0, (Number(stagger) || 0) * 1000);
     const safeCycleDelay = Math.max(400, Number(cycleDelay) || 2400);
     const safeFlips = Math.max(0, Math.floor(Number(flipsPerChar) || 0));
     const activeCharset = resolveCharset(charset);
 
     const animateTo = targetPhrase => {
+      setActiveTargetPhrase(targetPhrase);
+
       if (prefersReducedMotion) {
         currentTextRef.current = targetPhrase;
         setTiles(createTiles(targetPhrase));
         return 0;
       }
 
-      const fromPhrase = normalizePhrase(currentTextRef.current, width);
+      const fromPhrase = centerPhrase(currentTextRef.current, width);
       const targetChars = targetPhrase.split('');
 
       const plans = targetChars
@@ -242,7 +266,6 @@ const SplitFlapText = ({
         if (cancelled) return;
 
         const nextIndex = phraseIndex + 1;
-
         if (nextIndex >= normalizedPhrases.length && !loop) return;
 
         phraseIndex = nextIndex % normalizedPhrases.length;
@@ -263,15 +286,18 @@ const SplitFlapText = ({
     .map(tile => tile.current)
     .join('')
     .trimEnd();
+
   const componentStyle = {
     '--split-flap-tile-color': tileColor,
     '--split-flap-text-color': textColor,
     '--split-flap-radius': toCssUnit(tileRadius),
     '--split-flap-gap': toCssUnit(gap),
     '--split-flap-font-size': toCssUnit(fontSize),
-    '--split-flap-flip-duration': `${Math.max(0.04, Number(flipDuration) || 0.12)}s`,
+    '--split-flap-flip-duration': `${Math.max(0.04, Number(flipDuration) || 0.11)}s`,
     ...style
   };
+
+  const { start: activeStart, end: activeEnd } = getActiveRange(activeTargetPhrase);
 
   return React.createElement(
     'div',
@@ -282,64 +308,72 @@ const SplitFlapText = ({
       'aria-label': settledText || undefined,
       ...props
     },
-    tiles.map((tile, index) =>
-      React.createElement(
+    tiles.map((tile, index) => {
+      const isSlotEmpty = activeStart !== -1 && (index < activeStart || index >= activeEnd);
+
+      return React.createElement(
         'span',
         {
-          className: 'split-flap-text__tile',
+          className: `split-flap-text__slot ${isSlotEmpty ? 'is-empty' : ''}`,
           'aria-hidden': 'true',
-          key: `${index}-${tiles.length}`
+          key: `slot-${index}`
         },
         React.createElement(
           'span',
-          { className: 'split-flap-text__half split-flap-text__half--top' },
+          {
+            className: 'split-flap-text__tile'
+          },
           React.createElement(
             'span',
-            { className: 'split-flap-text__char' },
-            tile.current === ' ' ? '\u00A0' : tile.current
-          )
-        ),
-        React.createElement(
-          'span',
-          { className: 'split-flap-text__half split-flap-text__half--bottom' },
+            { className: 'split-flap-text__half split-flap-text__half--top' },
+            React.createElement(
+              'span',
+              { className: 'split-flap-text__char' },
+              tile.current === ' ' ? '\u00A0' : tile.current
+            )
+          ),
           React.createElement(
             'span',
-            { className: 'split-flap-text__char' },
-            tile.flipping ? tile.next : tile.current
-          )
-        ),
-        tile.flipping
-          ? React.createElement(
-              React.Fragment,
-              null,
-              React.createElement(
-                'span',
-                {
-                  className: 'split-flap-text__flap split-flap-text__flap--front',
-                  key: `front-${index}-${tile.tick}`
-                },
+            { className: 'split-flap-text__half split-flap-text__half--bottom' },
+            React.createElement(
+              'span',
+              { className: 'split-flap-text__char' },
+              tile.flipping ? tile.next : tile.current
+            )
+          ),
+          tile.flipping
+            ? React.createElement(
+                React.Fragment,
+                null,
                 React.createElement(
                   'span',
-                  { className: 'split-flap-text__char' },
-                  tile.current === ' ' ? '\u00A0' : tile.current
-                )
-              ),
-              React.createElement(
-                'span',
-                {
-                  className: 'split-flap-text__flap split-flap-text__flap--back',
-                  key: `back-${index}-${tile.tick}`
-                },
+                  {
+                    className: 'split-flap-text__flap split-flap-text__flap--front',
+                    key: `front-${index}-${tile.tick}`
+                  },
+                  React.createElement(
+                    'span',
+                    { className: 'split-flap-text__char' },
+                    tile.current === ' ' ? '\u00A0' : tile.current
+                  )
+                ),
                 React.createElement(
                   'span',
-                  { className: 'split-flap-text__char' },
-                  tile.next === ' ' ? '\u00A0' : tile.next
+                  {
+                    className: 'split-flap-text__flap split-flap-text__flap--back',
+                    key: `back-${index}-${tile.tick}`
+                  },
+                  React.createElement(
+                    'span',
+                    { className: 'split-flap-text__char' },
+                    tile.next === ' ' ? '\u00A0' : tile.next
+                  )
                 )
               )
-            )
-          : null
-      )
-    )
+            : null
+        )
+      );
+    })
   );
 };
 
