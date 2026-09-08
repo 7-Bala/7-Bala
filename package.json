@@ -1,0 +1,27 @@
+{
+  "name": "7-bala",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/7-Bala/7-Bala.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/7-Bala/7-Bala/issues"
+  },
+  "homepage": "https://github.com/7-Bala/7-Bala#readme",
+  "dependencies": {
+    "puppeteer": "^25.10.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.180.0"
+  }
+}

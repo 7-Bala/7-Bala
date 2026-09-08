@@ -1,0 +1,297 @@
+.split-flap-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--split-flap-text-color, #f8fafc);
+  font-family: 'SFMono-Regular', 'Roboto Mono', 'Cascadia Code', 'Liberation Mono', Menlo, monospace;
+  font-size: var(--split-flap-font-size, 38px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: pre;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+  perspective: 800px;
+}
+
+/* Slot container handles smooth scale & squeeze so empty boxes are automatically removed */
+.split-flap-text__slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(0.78em + var(--split-flap-gap, 6px));
+  overflow: visible;
+  transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.35s ease;
+}
+
+/* Collapsed slot collapses its width to zero with playful shrink */
+.split-flap-text__slot.is-collapsed {
+  width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.split-flap-text__tile {
+  position: relative;
+  width: 0.78em;
+  height: 1.12em;
+  overflow: hidden;
+  border-radius: var(--split-flap-radius, 7px);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(199, 85, 247, 0.18), transparent 50%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--split-flap-tile-color, #161b22) 85%, #c755f7 15%),
+      var(--split-flap-tile-color, #161b22)
+    );
+  box-shadow:
+    0 0.04em 0.08em rgba(199, 85, 247, 0.15) inset,
+    0 -0.06em 0.12em rgba(0, 0, 0, 0.5) inset,
+    0 0.15em 0.35em rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(199, 85, 247, 0.1);
+  perspective: 520px;
+  transform-style: preserve-3d;
+  isolation: isolate;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.35s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Playful scale-down when collapsed into oblivion */
+.split-flap-text__slot.is-collapsed .split-flap-text__tile {
+  transform: scale(0) rotate(-18deg);
+  opacity: 0;
+  box-shadow: none;
+}
+
+/* Quirky playful hop when actively flipping */
+.split-flap-text__tile--flipping {
+  animation: tile-quirky-hop 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 0.04em 0.08em rgba(199, 85, 247, 0.35) inset,
+    0 -0.06em 0.12em rgba(0, 0, 0, 0.5) inset,
+    0 0.25em 0.5em rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(199, 85, 247, 0.35) !important;
+  z-index: 10;
+}
+
+@keyframes tile-quirky-hop {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  40% {
+    transform: translateY(-4px) scale(1.06) rotate(calc(var(--tile-wobble, 1) * -1.2deg));
+  }
+  75% {
+    transform: translateY(1px) scale(0.98) rotate(calc(var(--tile-wobble, 1) * 0.5deg));
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+.split-flap-text__tile::before {
+  content: '';
+  position: absolute;
+  z-index: 8;
+  top: calc(50% - 0.5px);
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(199, 85, 247, 0.35) 15%,
+    rgba(0, 0, 0, 0.75) 50%,
+    rgba(199, 85, 247, 0.35) 85%,
+    transparent
+  );
+  box-shadow:
+    0 -1px 0 rgba(199, 85, 247, 0.15),
+    0 1px 0 rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+.split-flap-text__tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  border: 1px solid rgba(199, 85, 247, 0.18);
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset;
+  pointer-events: none;
+}
+
+.split-flap-text__half,
+.split-flap-text__flap {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 34%),
+    var(--split-flap-tile-color, #161b22);
+  backface-visibility: hidden;
+}
+
+.split-flap-text__half--top,
+.split-flap-text__flap--front {
+  top: 0;
+}
+
+.split-flap-text__half--bottom,
+.split-flap-text__flap--back {
+  bottom: 0;
+}
+
+.split-flap-text__half--bottom,
+.split-flap-text__flap--back {
+  background:
+    linear-gradient(0deg, rgba(199, 85, 247, 0.08), transparent 38%),
+    color-mix(in srgb, var(--split-flap-tile-color, #161b22) 90%, black);
+}
+
+.split-flap-text__char {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--split-flap-text-color, #f8fafc);
+  text-shadow:
+    0 0.025em 0 rgba(255, 255, 255, 0.18),
+    0 0.09em 0.16em rgba(0, 0, 0, 0.6);
+  transition: color 0.12s ease, text-shadow 0.12s ease;
+}
+
+/* Exclusively Violet glow during transition — NO BLUE AT ALL */
+.split-flap-text__tile--flipping .split-flap-text__char {
+  color: #c755f7 !important;
+  text-shadow:
+    0 0 14px rgba(199, 85, 247, 0.9),
+    0 0 28px rgba(199, 85, 247, 0.5),
+    0 0.09em 0.16em rgba(0, 0, 0, 0.6) !important;
+}
+
+/* CRT Phosphor Decay (Ghost Trail) */
+.split-flap-text__ghost {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: phosphor-decay 0.08s cubic-bezier(0.2, 0, 0.4, 1) forwards;
+}
+
+.split-flap-text__ghost .split-flap-text__char {
+  color: #e879f9 !important;
+  opacity: 0.35;
+  filter: blur(1.2px);
+  text-shadow:
+    0 0 8px rgba(232, 121, 249, 0.9),
+    0 0 16px rgba(199, 85, 247, 0.6);
+}
+
+@keyframes phosphor-decay {
+  0% {
+    opacity: 0.45;
+    transform: scale(1.02);
+    filter: blur(0.8px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.97);
+    filter: blur(2.5px);
+  }
+}
+
+.split-flap-text__half--top .split-flap-text__char,
+.split-flap-text__flap--front .split-flap-text__char {
+  top: 0;
+}
+
+.split-flap-text__half--bottom .split-flap-text__char,
+.split-flap-text__flap--back .split-flap-text__char {
+  bottom: 0;
+}
+
+.split-flap-text__flap {
+  z-index: 6;
+  will-change: transform, filter;
+  transform-style: preserve-3d;
+}
+
+/* Front flap drops forward with silky ease */
+.split-flap-text__flap--front {
+  transform-origin: center bottom;
+  animation: split-flap-playful-front var(--split-flap-flip-duration, 0.10s) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Back flap lands with a tactile mechanical overshoot spring */
+.split-flap-text__flap--back {
+  transform-origin: center top;
+  transform: rotateX(90deg);
+  animation: split-flap-playful-back var(--split-flap-flip-duration, 0.10s) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes split-flap-playful-front {
+  0% {
+    transform: rotateX(0deg);
+    filter: brightness(1.12);
+  }
+  100% {
+    transform: rotateX(-90deg);
+    filter: brightness(0.45);
+  }
+}
+
+@keyframes split-flap-playful-back {
+  0%, 25% {
+    transform: rotateX(90deg);
+    filter: brightness(0.55);
+  }
+  62% {
+    transform: rotateX(-12deg); /* playful mechanical overshoot */
+    filter: brightness(1.25);
+  }
+  84% {
+    transform: rotateX(5deg); /* spring rebound */
+    filter: brightness(1.08);
+  }
+  100% {
+    transform: rotateX(0deg);
+    filter: brightness(1);
+  }
+}
+
+/* Distinct Rapid Mechanical Odometer Drum Flip for Number '2' */
+.split-flap-text__tile--digit .split-flap-text__flap--front {
+  animation-duration: 0.065s !important;
+}
+
+.split-flap-text__tile--digit .split-flap-text__flap--back {
+  animation-duration: 0.065s !important;
+}
+
+.split-flap-text__tile--digit.split-flap-text__tile--flipping {
+  animation-duration: 0.11s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-flap-text__flap {
+    animation: none !important;
+  }
+  .split-flap-text__tile--flipping {
+    animation: none !important;
+  }
+  .split-flap-text__slot {
+    transition: none !important;
+  }
+}

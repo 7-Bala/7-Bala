@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=840, initial-scale=1.0" />
+  <title>README Banner Export</title>
+  <link rel="stylesheet" href="./CRTWarp.css" />
+  <link rel="stylesheet" href="./SplitFlapText.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #0d1117;
+      width: 840px;
+      height: 220px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #banner-stage {
+      position: relative;
+      width: 840px;
+      height: 220px;
+      background: #08060e;
+      overflow: hidden;
+    }
+    .crt-warp-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #08060e;
+      overflow: hidden;
+      mask-image: radial-gradient(ellipse 96% 90% at 50% 50%, black 50%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 96% 90% at 50% 50%, black 50%, transparent 100%);
+    }
+    .crt-warp-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 96% 90% at 50% 50%, transparent 50%, #0d1117 100%),
+                  linear-gradient(to right, #0d1117 0%, transparent 8%, transparent 92%, #0d1117 100%),
+                  linear-gradient(to bottom, #0d1117 0%, transparent 10%, transparent 90%, #0d1117 100%);
+      z-index: 5;
+    }
+    .crt-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .crt-overlay .split-flap-text {
+      pointer-events: auto;
+      filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(199, 85, 247, 0.4));
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19",
+        "react/": "https://esm.sh/react@19/",
+        "react-dom": "https://esm.sh/react-dom@19",
+        "react-dom/client": "https://esm.sh/react-dom@19/client",
+        "three": "https://esm.sh/three@0.180.0",
+        "./CRTWarp": "./CRTWarp.js",
+        "./SplitFlapText": "./SplitFlapText.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="banner-stage"></div>
+
+  <script type="module">
+    import React from 'react';
+    import { createRoot } from 'react-dom/client';
+    import CRTWarp from './CRTWarp.js';
+    import SplitFlapText from './SplitFlapText.js';
+
+    function Banner() {
+      return React.createElement(
+        'div',
+        { className: 'crt-warp-wrapper' },
+        React.createElement(CRTWarp, {
+          color: '#c755f7',
+          backgroundColor: '#08060e',
+          speed: 0.5,
+          curvature: 0.22,
+          scanlineStrength: 0.22,
+          scanlineFrequency: 200,
+          waveAmplitude: 0.3,
+          waveFrequency: 2.5,
+          bloom: 1.5,
+          bloomRadius: 1,
+          noise: 0.0,
+          vignette: 1.2,
+          brightness: 1.25,
+          pixelation: 1,
+          rgbShift: 0.015,
+          mouseReact: false,
+          dpr: 1,
+          fps: 60
+        }),
+        React.createElement(
+          'div',
+          { className: 'crt-overlay' },
+          React.createElement(SplitFlapText, {
+            words: ['think2thrive', 'explore'],
+            flipDuration: 0.09,
+            stagger: 0.035,
+            cycleDelay: 1600,
+            charset: 'alphanumeric',
+            flipsPerChar: 5,
+            tileColor: '#120d1c',
+            textColor: '#f8fafc',
+            tileRadius: 8,
+            gap: 7,
+            fontSize: 46,
+            loop: true
+          })
+        )
+      );
+    }
+
+    const root = createRoot(document.getElementById('banner-stage'));
+    root.render(React.createElement(Banner));
+    window.__BANNER_READY__ = true;
+  </script>
+</body>
+</html>
