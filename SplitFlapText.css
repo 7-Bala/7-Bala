@@ -23,34 +23,95 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Slot wrapper that allows centered dissolve-and-shrink for empty boxes */
+/* Slot wrapper that allows playful stretch-out and squeeze-in */
 .split-flap-text__slot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 0.78em;
+  height: 1.08em;
   min-width: 0;
   opacity: 1;
   transform: scale(1);
   margin: 0 calc(var(--split-flap-gap, 6px) / 2);
   overflow: hidden;
   box-sizing: border-box;
-  transition:
-    width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    margin 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.32s ease,
-    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: width, opacity, margin, transform;
 }
 
-/* When a slot becomes empty (outer padding for shorter words like 'explore'), smoothly shrink & dissolve */
-.split-flap-text__slot.is-empty {
+/* Left flank slots: anchored to their right neighbor (stretching out to the left) */
+.split-flap-text__slot.slot-flank-left {
+  transform-origin: 100% 50%;
+  transition:
+    width 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    margin 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.28s ease;
+  transition-delay: calc(var(--flank-dist, 0) * 0.08s);
+}
+
+/* Right flank slots: anchored to their left neighbor (stretching out to the right) */
+.split-flap-text__slot.slot-flank-right {
+  transform-origin: 0% 50%;
+  transition:
+    width 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    margin 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.28s ease;
+  transition-delay: calc(var(--flank-dist, 0) * 0.08s);
+}
+
+/* Squeeze animation when collapsing: think2thrive -> explore */
+.split-flap-text__slot.slot-flank-left.is-empty {
   width: 0 !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
   opacity: 0 !important;
-  transform: scale(0.82) !important;
+  transform: scaleX(0) scaleY(0.65) !important;
   pointer-events: none !important;
+  transition:
+    width 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    margin 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    transform 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    opacity 0.24s ease;
+  transition-delay: var(--squeeze-delay, 0s);
+}
+
+.split-flap-text__slot.slot-flank-right.is-empty {
+  width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  opacity: 0 !important;
+  transform: scaleX(0) scaleY(0.65) !important;
+  pointer-events: none !important;
+  transition:
+    width 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    margin 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    transform 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    opacity 0.24s ease;
+  transition-delay: var(--squeeze-delay, 0s);
+}
+
+/* Playful spring reaction on anchor boundary slots when stretching out */
+.split-flap-text__slot.slot-anchor-left.is-stretching {
+  animation: anchorNudgeLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.split-flap-text__slot.slot-anchor-right.is-stretching {
+  animation: anchorNudgeRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes anchorNudgeLeft {
+  0% { transform: scale(1); }
+  25% { transform: scaleX(0.88) scaleY(1.08) translateX(-3px); }
+  60% { transform: scaleX(1.06) scaleY(0.97) translateX(1px); }
+  100% { transform: scale(1) translateX(0); }
+}
+
+@keyframes anchorNudgeRight {
+  0% { transform: scale(1); }
+  25% { transform: scaleX(0.88) scaleY(1.08) translateX(3px); }
+  60% { transform: scaleX(1.06) scaleY(0.97) translateX(-1px); }
+  100% { transform: scale(1) translateX(0); }
 }
 
 .split-flap-text__tile {

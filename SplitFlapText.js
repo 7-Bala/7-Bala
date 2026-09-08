@@ -113,6 +113,7 @@ const SplitFlapText = ({
 
   const [tiles, setTiles] = useState(() => createTiles(normalizedPhrases[0] || ''));
   const [activeTargetPhrase, setActiveTargetPhrase] = useState(() => normalizedPhrases[0] || '');
+  const [isStretching, setIsStretching] = useState(false);
 
   useEffect(() => {
     const clearAnimation = () => {
@@ -149,6 +150,13 @@ const SplitFlapText = ({
 
     const animateTo = targetPhrase => {
       setActiveTargetPhrase(targetPhrase);
+
+      const prevClean = String(currentTextRef.current ?? '').trim();
+      const nextClean = String(targetPhrase ?? '').trim();
+      if (nextClean.length > prevClean.length) {
+        setIsStretching(true);
+        window.setTimeout(() => setIsStretching(false), 550);
+      }
 
       if (prefersReducedMotion) {
         currentTextRef.current = targetPhrase;
@@ -298,6 +306,17 @@ const SplitFlapText = ({
 
   const { start: activeStart, end: activeEnd } = getActiveRange(activeTargetPhrase);
 
+  // Core anchor range calculated from shortest phrase (explore -> [2, 9))
+  const shortestPhrase = useMemo(() => {
+    return phrases.reduce((min, p) => (String(p ?? '').trim().length < String(min ?? '').trim().length ? p : min), phrases[0] || '');
+  }, [phrases]);
+  const coreRange = useMemo(() => getActiveRange(centerPhrase(shortestPhrase, width)), [shortestPhrase, width]);
+
+  const coreStart = coreRange.start !== -1 ? coreRange.start : 2;
+  const coreEnd = coreRange.end !== -1 ? coreRange.end : 9;
+  const maxLeftDist = Math.max(0, coreStart - 1);
+  const maxRightDist = Math.max(0, width - coreEnd - 1);
+
   return React.createElement(
     'div',
     {
@@ -309,11 +328,39 @@ const SplitFlapText = ({
     },
     tiles.map((tile, index) => {
       const isSlotEmpty = activeStart !== -1 && (index < activeStart || index >= activeEnd);
+      const isLeftFlank = index < coreStart;
+      const isRightFlank = index >= coreEnd;
+      const isLeftAnchor = index === coreStart;
+      const isRightAnchor = index === coreEnd - 1;
+
+      let flankDist = 0;
+      let squeezeDelay = 0;
+      let flankClasses = '';
+
+      if (isLeftFlank) {
+        flankClasses = 'slot-flank-left';
+        flankDist = coreStart - 1 - index;
+        squeezeDelay = (maxLeftDist - flankDist) * 0.08;
+      } else if (isRightFlank) {
+        flankClasses = 'slot-flank-right';
+        flankDist = index - coreEnd;
+        squeezeDelay = (maxRightDist - flankDist) * 0.07;
+      } else if (isLeftAnchor) {
+        flankClasses = `slot-anchor-left ${isStretching ? 'is-stretching' : ''}`;
+      } else if (isRightAnchor) {
+        flankClasses = `slot-anchor-right ${isStretching ? 'is-stretching' : ''}`;
+      }
+
+      const slotStyle = {
+        '--flank-dist': flankDist,
+        '--squeeze-delay': `${squeezeDelay.toFixed(3)}s`
+      };
 
       return React.createElement(
         'span',
         {
-          className: `split-flap-text__slot ${isSlotEmpty ? 'is-empty' : ''}`,
+          className: `split-flap-text__slot ${flankClasses} ${isSlotEmpty ? 'is-empty' : ''}`.trim(),
+          style: slotStyle,
           'aria-hidden': 'true',
           key: `slot-${index}`
         },
